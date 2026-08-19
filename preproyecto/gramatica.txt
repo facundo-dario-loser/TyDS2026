@@ -1,0 +1,25 @@
+ejercicio 1)
+
+TYPE_VAR    -> INT | BOOL
+TYPE_FUNC   -> INT | BOOL | VOID
+
+P           -> TYPE_FUNC MAIN LPAREN RPAREN LCURLY I RCURLY
+
+I           -> S I | λ
+
+E           -> E PLUS E
+E           -> E MULT E
+E           -> (E)
+E           -> CONSTANTE_NUMERICA
+E           -> CONSTANTE_BOOLEANA
+E           -> ID
+
+S           -> DECLARACION
+S           -> ASIGNACION
+S           -> RETURN E SEMICOLON 
+S           -> RETURN SEMICOLON
+
+DECLARACION -> TYPE_VAR ID SEMICOLON
+
+ASIGNACION  -> ID ASSIGNMENT E SEMICOLON
+
