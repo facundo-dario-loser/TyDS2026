@@ -857,7 +857,7 @@ YY_RULE_SETUP
 case 20:
 YY_RULE_SETUP
 #line 29 "lexico.l"
-{ printf("[ERROR]: token no identificado\n"); }
+{ printf("[ERROR]: token no identificado (%s)\n", yytext); exit(-1); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP

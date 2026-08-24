@@ -1,0 +1,4 @@
+void main () {
+    int var1;
+    int var$2;
+}
