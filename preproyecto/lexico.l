@@ -14,6 +14,8 @@
         CONSTANTE_BOOLEANA,
         PLUS,
         MULT,
+        AND,
+        OR,
         ASSIGMENT,
         LPAREN,
         RPAREN,
@@ -37,6 +39,8 @@ true|false           { printf("CONSTANTE_BOOLEANA(%s)\n", yytext);       return 
 [0-9]+               { printf("CONSTANTE_NUMERICA(%d)\n", atoi(yytext)); return CONSTANTE_NUMERICA; }
 "+"                  { printf("PLUS\n");                                 return PLUS; }
 "*"                  { printf("MULT\n");                                 return MULT; }
+"&&"                 { printf("AND\n");                                  return AND; }
+"||"                 { printf("OR\n");                                   return OR; }
 "="                  { printf("ASSIGMENT\n");                            return ASSIGMENT; }
 "("                  { printf("LPAREN\n");                               return LPAREN; }
 ")"                  { printf("RPAREN\n");                               return RPAREN; }

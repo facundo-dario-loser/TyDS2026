@@ -9,6 +9,8 @@ I           -> S I | λ
 
 E           -> E PLUS E
 E           -> E MULT E
+E           -> E AND E 
+E           -> E OR E
 E           -> (E)
 E           -> CONSTANTE_NUMERICA
 E           -> CONSTANTE_BOOLEANA
