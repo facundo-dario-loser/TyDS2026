@@ -27,25 +27,25 @@ ASIGNACION  -> ID ASSIGNMENT E SEMICOLON
 
 
 
-*********************************************
+********************************************* (MODIFICACION)
 
-TYPE        -> INT | BOOL | VOID
+TYPE -> INT | BOOL | VOID
 
-P           -> TYPE MAIN LPAREN RPAREN LCURLY A RCURLY
+P    -> TYPE MAIN LPAREN RPAREN LCURLY A RCURLY
 
-A           -> D A | S A | λ
+A    -> D A | S A | λ
 
-E           -> E PLUS E                  // expresion
-E           -> E MULT E
-E           -> E AND E 
-E           -> E OR E
-E           -> (E)
-E           -> CONSTANTE_NUMERICA
-E           -> CONSTANTE_BOOLEANA
-E           -> ID
+E    -> E PLUS E                  // expresion
+E    -> E MULT E
+E    -> E AND E 
+E    -> E OR E
+E    -> (E)
+E    -> CONSTANTE_NUMERICA
+E    -> CONSTANTE_BOOLEANA
+E    -> ID
 
-S           -> ID ASSIGNMENT E SEMICOLON // sentencia 
-S           -> RETURN E SEMICOLON        
-S           -> RETURN SEMICOLON          
+S    -> ID ASSIGNMENT E SEMICOLON // sentencia 
+S    -> RETURN E SEMICOLON        
+S    -> RETURN SEMICOLON          
 
-D           -> TYPE ID SEMICOLON         // declaracion
+D    -> TYPE ID SEMICOLON         // declaracion

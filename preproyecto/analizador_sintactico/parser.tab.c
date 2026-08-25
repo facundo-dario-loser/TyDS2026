@@ -72,12 +72,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int yylex(void);
+int         yylex(void);
 extern void yyerror(const char *s);
 extern FILE *yyin;
-// convencion: tokens (terminales) van en mayus y los no terminales en minus
 
-#line 81 "parser.tab.c"
+#line 80 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -519,9 +518,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    20,    20,    22,    23,    24,    27,    28,    29,    32,
-      33,    34,    35,    36,    37,    38,    39,    42,    43,    44,
-      47
+       0,    21,    21,    23,    24,    25,    28,    29,    30,    33,
+      34,    35,    36,    37,    38,    39,    40,    43,    44,    45,
+      48
 };
 #endif
 
@@ -1106,7 +1105,7 @@ yyreduce:
   switch (yyn)
     {
 
-#line 1110 "parser.tab.c"
+#line 1109 "parser.tab.c"
 
       default: break;
     }
@@ -1299,7 +1298,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 49 "parser.y"
+#line 50 "parser.y"
 
 
 void yyerror(const char *s) {
@@ -1318,6 +1317,6 @@ int main(int argc, char** argv) {
 
     int res = yyparse();
 
-    if (res == 0) printf("[LOG]: analisis lexico completado\n");
+    if (res == 0) printf("[LOG]: analisis sintactico completado\n");
     return res;
 }

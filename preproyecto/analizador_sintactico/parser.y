@@ -2,14 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int yylex(void);
+int         yylex(void);
 extern void yyerror(const char *s);
 extern FILE *yyin;
-// convencion: tokens (terminales) van en mayus y los no terminales en minus
 %}
 
 %token INT BOOL VOID RETURN ID CONSTANTE_NUMERICA CONSTANTE_BOOLEANA AND OR MAIN
 
+// precendencia (de menor a mayor)
 %left OR
 %left AND
 %left '+'
@@ -17,6 +17,7 @@ extern FILE *yyin;
 
 %%
 
+// convencion: tokens (terminales) van en mayus y los no terminales en minus
 p: type MAIN '(' ')' '{' a '}';
 
 type: INT
@@ -64,6 +65,6 @@ int main(int argc, char** argv) {
 
     int res = yyparse();
 
-    if (res == 0) printf("[LOG]: analisis lexico completado\n");
+    if (res == 0) printf("[LOG]: analisis sintactico completado\n");
     return res;
 }
