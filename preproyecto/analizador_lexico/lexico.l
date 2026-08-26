@@ -26,5 +26,6 @@ true|false           { printf("CONSTANTE_BOOLEANA(%s)\n", yytext);       return 
 "}"                  { printf("RCURLY\n");                               return '}'; }
 ";"                  { printf("SEMICOLON\n");                            return ';'; }
 [ \n\t]+             { /* ignorar espacios, new line y tab */ }
+"//".*               { printf("C_LINEA(%s)\n", yytext); /* se ignora */ }
 .                    { printf("[ERROR]: token invalido (%s)\n", yytext); exit(-1); }
 %%

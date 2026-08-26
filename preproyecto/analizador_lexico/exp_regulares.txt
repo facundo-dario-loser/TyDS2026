@@ -20,3 +20,5 @@ RCURLY             = "}"
 SEMICOLON          = ";"
 MAIN               = main
 
+comentarios: ??
+COMENTARIO         = "//".*
