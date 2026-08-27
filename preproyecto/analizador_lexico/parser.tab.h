@@ -44,6 +44,12 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 16 "parser.y"
+
+    #include "../TADs/ast.h"
+
+#line 53 "parser.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -54,13 +60,13 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    INT = 258,                     /* INT  */
-    BOOL = 259,                    /* BOOL  */
-    VOID = 260,                    /* VOID  */
-    RETURN = 261,                  /* RETURN  */
-    ID = 262,                      /* ID  */
-    CONSTANTE_NUMERICA = 263,      /* CONSTANTE_NUMERICA  */
-    CONSTANTE_BOOLEANA = 264,      /* CONSTANTE_BOOLEANA  */
+    ID = 258,                      /* ID  */
+    CONSTANTE_NUMERICA = 259,      /* CONSTANTE_NUMERICA  */
+    CONSTANTE_BOOLEANA = 260,      /* CONSTANTE_BOOLEANA  */
+    INT = 261,                     /* INT  */
+    BOOL = 262,                    /* BOOL  */
+    VOID = 263,                    /* VOID  */
+    RETURN = 264,                  /* RETURN  */
     AND = 265,                     /* AND  */
     OR = 266,                      /* OR  */
     MAIN = 267                     /* MAIN  */
@@ -70,7 +76,18 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 21 "parser.y"
+
+    int     valor;
+    char    *nombre;
+    ASTNode *node;
+
+#line 88 "parser.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

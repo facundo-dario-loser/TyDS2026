@@ -6,4 +6,4 @@ programa : analizador_lexico/lexico.l analizador_sintactico/parser.y
 	gcc analizador_sintactico/parser.tab.c analizador_lexico/lex.yy.c -o main
 
 test : main
-	./main tests/test6_coment.txt	
+	./main tests/test8.txt	

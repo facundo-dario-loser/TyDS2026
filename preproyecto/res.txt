@@ -1,0 +1,43 @@
+( PROG )
+
+TYPE(int)
+
+(CUERPO )
+
+(TYPE(int) DECL ID(x)) 
+
+( CUERPO )
+
+(TYPE(int) DECL ID(y))
+
+( CUERPO )
+
+(TYPE(int) DECL ID(z))
+
+( CUERPO )
+
+(ID(x) = CTE(4))
+
+( CUERPO )
+
+(ID(z) = (ID(x) + ID(y)))
+
+((ID(z) RETURN ) CUERPO )
+
+
+
+( PROG )
+
+TYPE(void)
+
+( CUERPO )
+
+(TYPE(bool) DECL ID(a))
+
+( CUERPO )
+
+(TYPE(int) DECL ID(x))
+
+( CUERPO )
+
+(ID(a) = CTE(1))
