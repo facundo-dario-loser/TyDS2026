@@ -95,8 +95,12 @@ int main(int argc, char** argv) {
     int res = yyparse();
 
     if (res == 0) printf("[LOG]: analisis sintactico completado\n");
-    printf("****AST****:\n");
-    printAST(root);
+    
+    #ifdef DEBUG_AST
+        printf("\n****AST****:\n");
+        printAST(root);
+        printf("\n");
+    #endif
 
     return res;
 }

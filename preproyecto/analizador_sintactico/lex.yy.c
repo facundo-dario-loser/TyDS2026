@@ -485,8 +485,14 @@ char *yytext;
     #include <stdlib.h>
     #include <string.h>
     #include "parser.tab.h"
-#line 489 "lex.yy.c"
-#line 490 "lex.yy.c"
+
+    #ifdef DEBUG_LEXICO
+        #define debug_lexico(...) printf(__VA_ARGS__);
+    #else
+        #define debug_lexico(...)
+    #endif
+#line 495 "lex.yy.c"
+#line 496 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -703,9 +709,9 @@ YY_DECL
 		}
 
 	{
-#line 10 "lexico.l"
+#line 16 "lexico.l"
 
-#line 709 "lex.yy.c"
+#line 715 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -764,121 +770,121 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 11 "lexico.l"
-{ printf("INT\n");                                                                  return INT; }
+#line 17 "lexico.l"
+{ debug_lexico("INT\n");                                                                  return INT; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 12 "lexico.l"
-{ printf("BOOL\n");                                                                 return BOOL; }
+#line 18 "lexico.l"
+{ debug_lexico("BOOL\n");                                                                 return BOOL; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "lexico.l"
-{ printf("VOID\n");                                                                 return VOID; }
+#line 19 "lexico.l"
+{ debug_lexico("VOID\n");                                                                 return VOID; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 14 "lexico.l"
-{ printf("RETURN\n");                                                               return RETURN; }
+#line 20 "lexico.l"
+{ debug_lexico("RETURN\n");                                                               return RETURN; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 15 "lexico.l"
-{ printf("MAIN\n");                                                                 return MAIN; }
+#line 21 "lexico.l"
+{ debug_lexico("MAIN\n");                                                                 return MAIN; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "lexico.l"
-{ printf("CONSTANTE_BOOLEANA(%s)\n", yytext);       yylval.valor = 1;               return CONSTANTE_BOOLEANA; }
+#line 22 "lexico.l"
+{ debug_lexico("CONSTANTE_BOOLEANA(%s)\n", yytext);       yylval.valor = 1;               return CONSTANTE_BOOLEANA; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 17 "lexico.l"
-{ printf("CONSTANTE_BOOLEANA(%s)\n", yytext);       yylval.valor = 0;               return CONSTANTE_BOOLEANA; }
+#line 23 "lexico.l"
+{ debug_lexico("CONSTANTE_BOOLEANA(%s)\n", yytext);       yylval.valor = 0;               return CONSTANTE_BOOLEANA; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 18 "lexico.l"
-{ printf("ID(%s)\n", yytext);                       yylval.nombre = strdup(yytext); return ID; }
+#line 24 "lexico.l"
+{ debug_lexico("ID(%s)\n", yytext);                       yylval.nombre = strdup(yytext); return ID; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 19 "lexico.l"
-{ printf("CONSTANTE_NUMERICA(%d)\n", atoi(yytext)); yylval.valor = atoi(yytext);    return CONSTANTE_NUMERICA; }
+#line 25 "lexico.l"
+{ debug_lexico("CONSTANTE_NUMERICA(%d)\n", atoi(yytext)); yylval.valor = atoi(yytext);    return CONSTANTE_NUMERICA; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 20 "lexico.l"
-{ printf("PLUS\n");                                                                 return '+'; }
+#line 26 "lexico.l"
+{ debug_lexico("PLUS\n");                                                                 return '+'; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 21 "lexico.l"
-{ printf("MULT\n");                                                                 return '*'; }
+#line 27 "lexico.l"
+{ debug_lexico("MULT\n");                                                                 return '*'; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 22 "lexico.l"
-{ printf("AND\n");                                                                  return AND; }
+#line 28 "lexico.l"
+{ debug_lexico("AND\n");                                                                  return AND; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 23 "lexico.l"
-{ printf("OR\n");                                                                   return OR; }
+#line 29 "lexico.l"
+{ debug_lexico("OR\n");                                                                   return OR; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 24 "lexico.l"
-{ printf("ASSIGMENT\n");                                                            return '='; }
+#line 30 "lexico.l"
+{ debug_lexico("ASSIGMENT\n");                                                            return '='; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 25 "lexico.l"
-{ printf("LPAREN\n");                                                               return '('; }
+#line 31 "lexico.l"
+{ debug_lexico("LPAREN\n");                                                               return '('; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 26 "lexico.l"
-{ printf("RPAREN\n");                                                               return ')'; }
+#line 32 "lexico.l"
+{ debug_lexico("RPAREN\n");                                                               return ')'; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 27 "lexico.l"
-{ printf("LCURLY\n");                                                               return '{'; }
+#line 33 "lexico.l"
+{ debug_lexico("LCURLY\n");                                                               return '{'; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 28 "lexico.l"
-{ printf("RCURLY\n");                                                               return '}'; }
+#line 34 "lexico.l"
+{ debug_lexico("RCURLY\n");                                                               return '}'; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 29 "lexico.l"
-{ printf("SEMICOLON\n");                                                            return ';'; }
+#line 35 "lexico.l"
+{ debug_lexico("SEMICOLON\n");                                                            return ';'; }
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 30 "lexico.l"
+#line 36 "lexico.l"
 { /* ignorar espacios, new line y tab */ }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 31 "lexico.l"
-{ printf("C_LINEA(%s)\n", yytext); /* se ignora */ }
+#line 37 "lexico.l"
+{ debug_lexico("C_LINEA(%s)\n", yytext); /* se ignora */ }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 32 "lexico.l"
-{ printf("[ERROR]: token invalido (%s)\n", yytext); exit(-1); }
+#line 38 "lexico.l"
+{ debug_lexico("[ERROR]: token invalido (%s)\n", yytext); exit(-1); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 33 "lexico.l"
+#line 39 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 882 "lex.yy.c"
+#line 888 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1883,6 +1889,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 33 "lexico.l"
+#line 39 "lexico.l"
 
 
