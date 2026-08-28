@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #define CHECK_IS_NOT_NULL(node) if (!n) { printf("[ERROR]: no se pudo alocar memoria para un nodo\n"); exit(-1); }
 #define IS_LEAF(node) !node->left && !node->right
@@ -59,7 +60,7 @@ ASTNode * newLeaf(ASTLeafConfig *config) {
     CHECK_IS_NOT_NULL(n);
     n->tipo   = config->tipo;
     n->valor  = config->valor;
-    n->nombre = config->nombre;
+    if (config->nombre) n->nombre = strdup(config->nombre);
     n->left   = NULL;
     n->right  = NULL;
     return n;
