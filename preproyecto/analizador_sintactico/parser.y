@@ -6,8 +6,8 @@
 #include "../TADs/ast.h"
 #include "../analizador_semantico/analisis_semantico.h"
 
-int         yylex(void);
-extern void yyerror(const char *s);
+int    yylex(void);
+void   yyerror(const char *s);
 extern FILE *yyin;
 
 ASTNode *root = NULL;
@@ -98,7 +98,6 @@ int main(int argc, char** argv) {
 
     if (res == 0) printf("[LOG]: analisis sintactico completado\n");
     
-    #define DEBUG_AST
     #ifdef DEBUG_AST
         printf("\n****AST****:\n");
         printAST(root);

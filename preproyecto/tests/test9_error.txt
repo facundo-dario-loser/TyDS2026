@@ -1,4 +1,9 @@
-int main() {
+bool main() {
     int x;
-    x = 2;
+    int y;
+    x = 2 + 2;
+    bool a;
+    a = true;
+
+    return x;
 }

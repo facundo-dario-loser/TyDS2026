@@ -19,16 +19,32 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                             config.tipo       = root->left->semanticType; // el tipo que retorna main
                             config.parametros = NULL;                     // main no tiene parametros por ahora
                             abrirNivel(ts);                              // nos metemos 1 nivel adentro (por main)
+                            
                             // TODO: verificar que no intente crear una funcion dentro de otra
                             insertarSimbolo(ts, &config);                       
-                            if (root->right) analisisSemanticoAux(root->right, ts); // analizar el cuerpo de la funcion
+                            
+                            if (root->right) { // analizar el cuerpo de la funcion
+                                analisisSemanticoAux(root->right, ts);
+                                root->tieneReturn = root->right->tieneReturn;
+                            }
+
+                            if ((config.tipo != S_VOID) && !root->tieneReturn) {
+                                printf("[ERROR:AS]: main retorna algo, pero en el cuerpo no se esta retornando nada\n");
+                                exit(EXIT_FAILURE);
+                            }        
                          } break;
 
         case N_TYPE:     break;
 
         case N_CUERPO:   { analisisSemanticoAux(root->left, ts);
                            if (root->right) analisisSemanticoAux(root->right, ts);
-                         } break;
+                           
+                           bool leftTieneReturn  = false;
+                           bool rightTieneReturn = false;
+                           if (root->left)  leftTieneReturn  = root->left->tieneReturn;
+                           if (root->right) rightTieneReturn = root->right->tieneReturn;
+                           root->tieneReturn = leftTieneReturn || rightTieneReturn;
+                        } break;
 
         case N_DECL:     { SymbolConfig config;
                            config.flag = S_VARIABLE;
@@ -39,6 +55,7 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                                 printf("[ERROR:AS]: variable re-declarada -> %s\n", config.nombre);
                                 exit(EXIT_FAILURE);
                            }
+                           root->tieneReturn = false;
                          } break;
 
         case N_EXP_SUMA: { analisisSemanticoAux(root->left, ts);
@@ -48,6 +65,7 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                                 exit(EXIT_FAILURE);                            
                            }
                            root->semanticType = S_INT;
+                           root->tieneReturn = false;
                          } break;
 
         case N_EXP_MULT: { analisisSemanticoAux(root->left, ts);
@@ -57,24 +75,27 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                                 exit(EXIT_FAILURE);                            
                            }
                            root->semanticType = S_INT;
+                           root->tieneReturn = false;
                          } break;
 
         case N_EXP_AND:  { analisisSemanticoAux(root->left, ts);
                            analisisSemanticoAux(root->right, ts);
                            if (!checkChildrenType(root, S_BOOL)) { // la suma esta definida solo para ints
-                                printf("[ERROR:AS]: '&&' solo esta definida para operandos de tipo int\n");
+                                printf("[ERROR:AS]: '&&' solo esta definida para operandos de tipo bool\n");
                                 exit(EXIT_FAILURE);                            
                            }
                            root->semanticType = S_BOOL;
+                           root->tieneReturn = false;
                          } break;
 
         case N_EXP_OR:  { analisisSemanticoAux(root->left, ts);
                           analisisSemanticoAux(root->right, ts);
                           if (!checkChildrenType(root, S_BOOL)) { // la suma esta definida solo para ints
-                                printf("[ERROR:AS]: '||' solo esta definida para operandos de tipo int\n");
+                                printf("[ERROR:AS]: '||' solo esta definida para operandos de tipo bool\n");
                                 exit(EXIT_FAILURE);                            
                           }
                           root->semanticType = S_BOOL;
+                          root->tieneReturn = false;
                         } break;
 
         case N_CTE_INT:  break;
@@ -87,6 +108,7 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                            } else {
                                root->semanticType = s->tipo;
                            }
+                           root->tieneReturn = false;
                          } break;
         
         case N_ASSIGN:   { analisisSemanticoAux(root->left, ts);
@@ -95,6 +117,7 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                               printf("[ERROR:AS]: '=' tipo de leftOp es diferente del tipo de rightOp\n");
                               exit(EXIT_FAILURE);
                             }
+                            root->tieneReturn = false;
                         } break;
 
         case N_RETURN:   { // hay que chequear que se retorne lo mismo que en el perfil de main
@@ -103,7 +126,7 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                            
                            if (exp == NULL) { // si hace 'return;'
                                 if (s->tipo != S_VOID) {
-                                    printf("[ERROR:AS]: main no retorna nada (void)\n");
+                                    printf("[ERROR:AS]: main retorna algo, pero en la funcion se hace return sin nada\n");
                                     exit(EXIT_FAILURE);
                                 }
                            } else { // si retorna algo 'return exp;'
@@ -125,6 +148,7 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                                 }
                            }
                            cerrarNivel(ts); 
+                           root->tieneReturn = true;
                          } break;
     }
 }
