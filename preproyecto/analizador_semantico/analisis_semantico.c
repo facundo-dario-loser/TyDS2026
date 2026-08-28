@@ -18,10 +18,10 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                             config.nombre     = "main";                   // por ahora solo tenemos la funcion main
                             config.tipo       = root->left->semanticType; // el tipo que retorna main
                             config.parametros = NULL;                     // main no tiene parametros por ahora
-                            abrirNivel(ts);                              // nos metemos 1 nivel adentro (por main)
                             
                             // TODO: verificar que no intente crear una funcion dentro de otra
                             insertarSimbolo(ts, &config);                       
+                            abrirNivel(ts);    // nos metemos 1 nivel adentro (adentro de main)
                             
                             if (root->right) { // analizar el cuerpo de la funcion
                                 analisisSemanticoAux(root->right, ts);
@@ -29,7 +29,8 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                             }
 
                             if ((config.tipo != S_VOID) && !root->tieneReturn) {
-                                printf("[ERROR:AS]: main retorna algo, pero en el cuerpo no se esta retornando nada\n");
+                                char *valRet = (config.tipo == S_INT) ? "int" : "bool";
+                                printf("[ERROR:AS]: main retorna '%s', pero en el cuerpo no se esta retornando nada\n", valRet);
                                 exit(EXIT_FAILURE);
                             }        
                          } break;
@@ -50,9 +51,15 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                            config.flag = S_VARIABLE;
                            config.tipo = root->left->semanticType;
                            if (root->right->nombre) config.nombre = strdup(root->right->nombre);
+
+                           if (config.tipo == S_VOID) {
+                                printf("[ERROR:AS]: no se pueden declarar variables void -> '%s'\n", config.nombre);
+                                exit(EXIT_FAILURE);
+                           }
+
                            bool res = insertarSimbolo(ts, &config);
                            if (!res) {
-                                printf("[ERROR:AS]: variable re-declarada -> %s\n", config.nombre);
+                                printf("[ERROR:AS]: variable redeclarada -> '%s'\n", config.nombre);
                                 exit(EXIT_FAILURE);
                            }
                            root->tieneReturn = false;
@@ -62,6 +69,21 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                            analisisSemanticoAux(root->right, ts);
                            if (!checkChildrenType(root, S_INT)) { // la suma esta definida solo para ints
                                 printf("[ERROR:AS]: '+' solo esta definida para operandos de tipo int\n");
+                                
+                                if (root->left) {
+                                    char *leftOp = (root->left->semanticType == S_INT) ? "int" : "bool";
+                                    printf("\t\tleftOp: %s\n", leftOp);
+                                } else {
+                                    printf("\t\tleftOp: empty\n");
+                                }
+
+                                if (root->right) {
+                                    char *rightOp = (root->right->semanticType == S_INT) ? "int" : "bool"; 
+                                    printf("\t\trightOp: %s\n", rightOp);
+                                } else {
+                                    printf("\t\trightOp: empty\n");
+                                }
+
                                 exit(EXIT_FAILURE);                            
                            }
                            root->semanticType = S_INT;
@@ -72,6 +94,21 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                            analisisSemanticoAux(root->right, ts);
                            if (!checkChildrenType(root, S_INT)) { // la suma esta definida solo para ints
                                 printf("[ERROR:AS]: '*' solo esta definida para operandos de tipo int\n");
+                                
+                                if (root->left) {
+                                    char *leftOp = (root->left->semanticType == S_INT) ? "int" : "bool";
+                                    printf("\t\tleftOp: %s\n", leftOp);
+                                } else {
+                                    printf("\t\tleftOp: empty\n");
+                                }
+
+                                if (root->right) {
+                                    char *rightOp = (root->right->semanticType == S_INT) ? "int" : "bool"; 
+                                    printf("\t\trightOp: %s\n", rightOp);
+                                } else {
+                                    printf("\t\trightOp: empty\n");
+                                }
+
                                 exit(EXIT_FAILURE);                            
                            }
                            root->semanticType = S_INT;
@@ -82,6 +119,21 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                            analisisSemanticoAux(root->right, ts);
                            if (!checkChildrenType(root, S_BOOL)) { // la suma esta definida solo para ints
                                 printf("[ERROR:AS]: '&&' solo esta definida para operandos de tipo bool\n");
+                                
+                                if (root->left) {
+                                    char *leftOp = (root->left->semanticType == S_INT) ? "int" : "bool";
+                                    printf("\t\tleftOp: %s\n", leftOp);
+                                } else {
+                                    printf("\t\tleftOp: empty\n");
+                                }
+
+                                if (root->right) {
+                                    char *rightOp = (root->right->semanticType == S_INT) ? "int" : "bool"; 
+                                    printf("\t\trightOp: %s\n", rightOp);
+                                } else {
+                                    printf("\t\trightOp: empty\n");
+                                }
+
                                 exit(EXIT_FAILURE);                            
                            }
                            root->semanticType = S_BOOL;
@@ -92,6 +144,21 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                           analisisSemanticoAux(root->right, ts);
                           if (!checkChildrenType(root, S_BOOL)) { // la suma esta definida solo para ints
                                 printf("[ERROR:AS]: '||' solo esta definida para operandos de tipo bool\n");
+                                
+                                if (root->left) {
+                                    char *leftOp = (root->left->semanticType == S_INT) ? "int" : "bool";
+                                    printf("\t\tleftOp: %s\n", leftOp);
+                                } else {
+                                    printf("\t\tleftOp: empty\n");
+                                }
+
+                                if (root->right) {
+                                    char *rightOp = (root->right->semanticType == S_INT) ? "int" : "bool"; 
+                                    printf("\t\trightOp: %s\n", rightOp);
+                                } else {
+                                    printf("\t\trightOp: empty\n");
+                                }
+                                
                                 exit(EXIT_FAILURE);                            
                           }
                           root->semanticType = S_BOOL;
@@ -103,7 +170,7 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
 
         case N_ID:       { Symbol *s = buscarSimbolo(ts, root->nombre);
                            if (!s) {
-                               printf("[ERROR:AS]: variable no declarada -> %s\n", root->nombre);
+                               printf("[ERROR:AS]: variable no declarada -> '%s'\n", root->nombre);
                                exit(EXIT_FAILURE);
                            } else {
                                root->semanticType = s->tipo;
@@ -115,6 +182,21 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                            analisisSemanticoAux(root->right, ts);
                            if (!checkChildrenType(root, root->left->semanticType)) { // la parte derecha de la asignacion deberia tener el mismo tipo que la parte izquierda
                               printf("[ERROR:AS]: '=' tipo de leftOp es diferente del tipo de rightOp\n");
+
+                              if (root->left) {
+                                    char *leftOp = (root->left->semanticType == S_INT) ? "int" : "bool";
+                                    printf("\t\tleftOp: %s\n", leftOp);
+                              } else {
+                                    printf("\t\tleftOp: empty\n");
+                              }
+
+                              if (root->right) {
+                                    char *rightOp = (root->right->semanticType == S_INT) ? "int" : "bool"; 
+                                    printf("\t\trightOp: %s\n", rightOp);
+                              } else {
+                                    printf("\t\trightOp: empty\n");
+                              }
+
                               exit(EXIT_FAILURE);
                             }
                             root->tieneReturn = false;
@@ -126,28 +208,32 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
                            
                            if (exp == NULL) { // si hace 'return;'
                                 if (s->tipo != S_VOID) {
-                                    printf("[ERROR:AS]: main retorna algo, pero en la funcion se hace return sin nada\n");
+                                    char *retType = (s->tipo == S_INT) ? "int" : "bool";
+                                    printf("[ERROR:AS]: main retorna '%s', pero en la funcion se hace return sin nada\n", retType);
                                     exit(EXIT_FAILURE);
                                 }
                            } else { // si retorna algo 'return exp;'
                                 if (s->tipo == S_VOID) {
-                                    printf("[ERROR:AS]: main no retorna nada (void), pero se esta retornando una exp\n");
+                                    char *retType = (exp->semanticType == S_INT) ? "int" : "bool";
+                                    printf("[ERROR:AS]: main no retorna nada (void), pero se esta retornando un '%s'\n", retType);
                                     exit(EXIT_FAILURE);
                                 }
 
                                 analisisSemanticoAux(root->left, ts); // analizar la exp que se retorna
 
                                 if ((s->tipo == S_INT) && !(exp->semanticType == S_INT)) {
-                                    printf("[ERROR:AS]: main retorna un int, pero se esta retornando otro tipo\n");
+                                    char *expType = (exp->semanticType == S_INT) ? "int" : "bool";
+                                    printf("[ERROR:AS]: main retorna un int, pero se esta retornando un '%s'\n", expType);
                                     exit(EXIT_FAILURE);
                                 }
 
                                 if ((s->tipo == S_BOOL) && !(exp->semanticType == S_BOOL)) {
-                                    printf("[ERROR:AS]: main retorna un bool, pero se esta retornando otro tipo\n");
+                                    char *expType = (exp->semanticType == S_INT) ? "int" : "bool";
+                                    printf("[ERROR:AS]: main retorna un bool, pero se esta retornando un '%s'\n", expType);
                                     exit(EXIT_FAILURE);
                                 }
                            }
-                           cerrarNivel(ts); 
+                           cerrarNivel(ts); // en el futuro no necesariamente deberia cerrar el nivel (si esta dentro de un if por ej)
                            root->tieneReturn = true;
                          } break;
     }

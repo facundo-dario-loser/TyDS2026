@@ -1,9 +1,6 @@
-bool main() {
-    int x;
-    int y;
-    x = 2 + 2;
-    bool a;
-    a = true;
-
-    return x;
+int main() {
+   int x;
+   bool y;
+   y = true;
+   return x; 
 }

@@ -2,7 +2,6 @@
 #define ANALISIS_SEMANTICO_H
 
 #include "../TADs/ast.h"
-//#define TS_IMPLEMENTATION
 #include "../TADs/ts.h"
 #include <stdbool.h>
 #include <string.h>

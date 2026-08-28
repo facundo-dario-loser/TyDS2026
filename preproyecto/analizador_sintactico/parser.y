@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#define AST_IMPLEMENTATION
 #include "../TADs/ast.h"
 #include "../analizador_semantico/analisis_semantico.h"
 
@@ -12,6 +11,9 @@ extern FILE *yyin;
 
 ASTNode *root = NULL;
 %}
+
+// para hacer mejores logs cuando hay un error de sintaxis
+%define parse.error detailed 
 
 // para que meta las bibliotecas en parser.tab.h
 %code requires {
