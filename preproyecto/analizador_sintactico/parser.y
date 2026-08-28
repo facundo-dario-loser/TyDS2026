@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define AST_IMPLEMENTATION
+//#define AST_IMPLEMENTATION
 #include "../TADs/ast.h"
+#include "../analizador_semantico/analisis_semantico.h"
 
 int         yylex(void);
 extern void yyerror(const char *s);
@@ -12,12 +13,13 @@ extern FILE *yyin;
 ASTNode *root = NULL;
 %}
 
-// para que meta ast.h en parser.tab.h
+// para que meta las bibliotecas en parser.tab.h
 %code requires {
     #include "../TADs/ast.h"
+    #include "../analizador_semantico/analisis_semantico.h"
 }
 
-// valores/datos que peuden tener los tokens
+// valores/datos que pueden tener los tokens
 %union {
     int     valor;
     char    *nombre;
@@ -44,9 +46,9 @@ p: type MAIN '(' ')' '{' c '}' { $$ = newTree(N_PROG, $1, $6);
                                }
 ;
 
-type: INT  { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .nombre = "int"});  }
-    | BOOL { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .nombre = "bool"}); }
-    | VOID { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .nombre = "void"}); }
+type: INT  { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_INT});  }
+    | BOOL { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_BOOL}); }
+    | VOID { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_VOID}); }
     ;
 
 c: d c          { $$ = newTree(N_CUERPO, $1, $2); }
@@ -59,8 +61,8 @@ e: e '+' e            { $$ = newTree(N_EXP_SUMA, $1, $3); }
  | e AND e            { $$ = newTree(N_EXP_AND, $1, $3); }
  | e OR e             { $$ = newTree(N_EXP_OR, $1, $3); }
  | '(' e ')'          { $$ = $2; }
- | CONSTANTE_NUMERICA { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_INT, .valor = $1}); }
- | CONSTANTE_BOOLEANA { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_BOOL, .valor = $1}); }
+ | CONSTANTE_NUMERICA { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_INT, .valor = $1, .semanticType = S_INT}); }
+ | CONSTANTE_BOOLEANA { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_BOOL, .valor = $1, .semanticType = S_BOOL}); }
  | ID                 { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $1}); }
  ;
 
@@ -96,11 +98,15 @@ int main(int argc, char** argv) {
 
     if (res == 0) printf("[LOG]: analisis sintactico completado\n");
     
+    #define DEBUG_AST
     #ifdef DEBUG_AST
         printf("\n****AST****:\n");
         printAST(root);
         printf("\n");
     #endif
+
+    analisisSemantico(root);
+    printf("[LOG]: analisis semantico completado\n");
 
     return res;
 }
