@@ -72,3 +72,22 @@ Symbol * buscarSimbolo(TS *ts, char *nombre) {
     // la variable no fue declarada
     return NULL; 
 }
+
+void printTS(TS *ts) {
+    printf("****TS****\n");
+    Level *levelAux = ts->tope;
+    Symbol *symbolAux;
+
+    while (levelAux != NULL) {
+        symbolAux = levelAux->head;
+
+        while (symbolAux != NULL) {
+            printf("[%s] -> ", symbolAux->nombre);
+            symbolAux = symbolAux->next;
+        }
+        printf("NULL\n");
+        printf("ʌ\n");
+        printf("|\n");
+        levelAux = levelAux->next;
+    }
+}

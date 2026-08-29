@@ -49,6 +49,7 @@ void abrirNivel(TS *ts);
 void cerrarNivel(TS *ts);
 bool insertarSimbolo(TS *ts, SymbolConfig *config); // lo hace en el nivel del tope. retorna false si la variable a insertar ya fue declarada en el mismo scope
 Symbol * buscarSimbolo(TS *ts, char *nombre);       // si no encuentra el simbolo retorna NULL
+void printTS(TS *ts);
 
 // TODO: agregar una funcion para liberar la memoria de la tabla de simbolos
 

@@ -25,19 +25,19 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
     }
 
     switch (root->tipo) {
-        case N_PROG: analisisNPROG(root, ts); break;
-        case N_TYPE: break;
-        case N_CUERPO: analisisNCUERPO(root, ts); break;
-        case N_DECL: analisisDECL(root, ts); break;
+        case N_PROG:     analisisNPROG(root, ts);    break;
+        case N_TYPE:                                 break;
+        case N_CUERPO:   analisisNCUERPO(root, ts);  break;
+        case N_DECL:     analisisDECL(root, ts);     break;
         case N_EXP_SUMA: analisisNEXPSUMA(root, ts); break;
         case N_EXP_MULT: analisisNEXPMULT(root, ts); break;
-        case N_EXP_AND: analisisNEXPAND(root, ts); break;
-        case N_EXP_OR: analisisNEXPOR(root, ts); break;
-        case N_CTE_INT:  break;
-        case N_CTE_BOOL: break;
-        case N_ID: analisisNID(root, ts); break;
-        case N_ASSIGN: analisisNASSIGN(root, ts); break;
-        case N_RETURN: analisisNRETURN(root, ts); break;
+        case N_EXP_AND:  analisisNEXPAND(root, ts);  break;
+        case N_EXP_OR:   analisisNEXPOR(root, ts);   break;
+        case N_CTE_INT:                              break;
+        case N_CTE_BOOL:                             break;
+        case N_ID:       analisisNID(root, ts);      break;
+        case N_ASSIGN:   analisisNASSIGN(root, ts);  break;
+        case N_RETURN:   analisisNRETURN(root, ts);  break;
     }
 }
 
@@ -176,7 +176,7 @@ void analisisNEXPAND(ASTNode *node, TS *ts) {
         exit(EXIT_FAILURE);                            
     }
     node->semanticType = S_BOOL;
-    node->tieneReturn = false;
+    node->tieneReturn  = false;
 }
 
 void analisisNEXPOR(ASTNode *node, TS *ts) {
@@ -202,7 +202,7 @@ void analisisNEXPOR(ASTNode *node, TS *ts) {
         exit(EXIT_FAILURE);                            
     }
     node->semanticType = S_BOOL;
-    node->tieneReturn = false;
+    node->tieneReturn  = false;
 }
 
 void analisisNID(ASTNode *node, TS *ts) {
@@ -219,6 +219,7 @@ void analisisNID(ASTNode *node, TS *ts) {
 void analisisNASSIGN(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
+    
     if (!checkChildrenType(node, node->left->semanticType)) { // la parte derecha de la asignacion deberia tener el mismo tipo que la parte izquierda
         printf("[ERROR:AS]: '=' tipo de leftOp es diferente del tipo de rightOp\n");
 
