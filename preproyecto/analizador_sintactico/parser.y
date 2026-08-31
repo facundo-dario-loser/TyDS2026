@@ -46,14 +46,14 @@ ASTNode *root = NULL;
 
 // convencion: tokens (terminales) van en mayus y los no terminales en minus
 p: type MAIN '(' ')' '{' c '}' { $$ = newTree(N_PROG, $1, $6);
-                                 $$->line = yylineno; // la linea donde arranca main
+                                 $$->line = $1->line; // la linea donde arranca main (bison hace LALR por ende 'p' se termina de procesar al final y termina arrojando la ultima linea)
                                  root = $$;
                                }
 ;
 
-type: INT  { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_INT});  }
-    | BOOL { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_BOOL}); }
-    | VOID { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_VOID}); }
+type: INT  { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_INT});  $$->line = yylineno; }
+    | BOOL { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_BOOL}); $$->line = yylineno; }
+    | VOID { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_VOID}); $$->line = yylineno; }
     ;
 
 c: d c          { $$ = newTree(N_CUERPO, $1, $2); }
@@ -68,10 +68,11 @@ e: e '+' e            { $$ = newTree(N_EXP_SUMA, $1, $3); $$->line = yylineno; }
  | '(' e ')'          { $$ = $2; }
  | CONSTANTE_NUMERICA { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_INT, .valor = $1, .semanticType = S_INT}); }
  | CONSTANTE_BOOLEANA { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_BOOL, .valor = $1, .semanticType = S_BOOL}); }
- | ID                 { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $1}); }
+ | ID                 { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $1}); $$->line = yylineno; }
  ;
 
 s: ID '=' e ';' { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $1});
+                  leaf->line = yylineno;
                   $$ = newTree(N_ASSIGN, leaf, $3); 
                   $$->line = yylineno;
                 }

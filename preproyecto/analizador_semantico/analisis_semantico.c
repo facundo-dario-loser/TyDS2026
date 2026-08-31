@@ -72,7 +72,7 @@ void analisisNPROG(ASTNode *node, TS *ts) {
 
     if ((config.tipo != S_VOID) && !node->tieneReturn) {
         char *valRet = (config.tipo == S_INT) ? "int" : "bool";
-        printf("[ERROR:AS]: main retorna '%s', pero en el cuerpo no se esta retornando nada\n", valRet);
+        printf("[ERROR:AS]: main retorna '%s', pero en el cuerpo no se esta retornando nada (linea: %d)\n", valRet, node->line);
         exit(EXIT_FAILURE);
     }        
 }
@@ -92,6 +92,7 @@ void analisisDECL(ASTNode *node, TS *ts) {
     SymbolConfig config;
     config.flag = S_VARIABLE;
     config.tipo = node->left->semanticType;
+    config.valor = 0; // todas las variables al declararlas se inicializan con 0
     if (node->right->nombre) config.nombre = strdup(node->right->nombre);
 
     if (config.tipo == S_VOID) {
@@ -219,8 +220,8 @@ void analisisNEXPOR(ASTNode *node, TS *ts) {
 void analisisNID(ASTNode *node, TS *ts) {
     Symbol *s = buscarSimbolo(ts, node->nombre);
     
-    if (!s) { // TODO agregar linea al msj
-        printf("[ERROR:AS]: variable no declarada -> '%s'\n", node->nombre);
+    if (!s) {
+        printf("[ERROR:AS]: variable no declarada -> '%s' (linea: %d)\n", node->nombre, node->line);
         exit(EXIT_FAILURE);
     } else {
         node->semanticType = s->tipo; // lo dejo apuntando para el interprete
@@ -264,13 +265,13 @@ void analisisNRETURN(ASTNode *node, TS *ts) {
     if (exp == NULL) { // si hace 'return;'
         if (s->tipo != S_VOID) {
             char *retType = (s->tipo == S_INT) ? "int" : "bool";
-            printf("[ERROR:AS]: main retorna '%s', pero en la funcion se hace return sin nada\n", retType);
+            printf("[ERROR:AS]: main retorna '%s', pero en la funcion se hace return sin nada (linea: %d)\n", retType, node->line);
             exit(EXIT_FAILURE);
         }
     } else { // si retorna algo 'return exp;'
         if (s->tipo == S_VOID) {
             char *retType = (exp->semanticType == S_INT) ? "int" : "bool";
-            printf("[ERROR:AS]: main no retorna nada (void), pero se esta retornando un '%s'\n", retType);
+            printf("[ERROR:AS]: main no retorna nada (void), pero se esta retornando un '%s' (linea: %d)\n", retType, node->line);
             exit(EXIT_FAILURE);
         }
 
@@ -278,13 +279,13 @@ void analisisNRETURN(ASTNode *node, TS *ts) {
 
         if ((s->tipo == S_INT) && !(exp->semanticType == S_INT)) {
             char *expType = (exp->semanticType == S_INT) ? "int" : "bool";
-            printf("[ERROR:AS]: main retorna un int, pero se esta retornando un '%s'\n", expType);
+            printf("[ERROR:AS]: main retorna un int, pero se esta retornando un '%s' (linea: %d)\n", expType, node->line);
             exit(EXIT_FAILURE);
         }
 
         if ((s->tipo == S_BOOL) && !(exp->semanticType == S_BOOL)) {
             char *expType = (exp->semanticType == S_INT) ? "int" : "bool";
-            printf("[ERROR:AS]: main retorna un bool, pero se esta retornando un '%s'\n", expType);
+            printf("[ERROR:AS]: main retorna un bool, pero se esta retornando un '%s' (linea: %d)\n", expType, node->line);
             exit(EXIT_FAILURE);
         }
     }

@@ -92,25 +92,20 @@ void printTS(TS *ts) {
     }
 }
 
-void debugTS(TS *ts) {
-    printf("****TS****\n");
-    Level *levelAux = ts->tope;
-    Symbol *symbolAux;
+void freeSymbol(Symbol *s) {
+    if (s->parametros) {
+        Symbol *aux = s->parametros;
 
-    while (levelAux != NULL) {
-        symbolAux = levelAux->head;
-
-        while (symbolAux != NULL) {
-            if (symbolAux->flag = S_VARIABLE) {
-                printf("[%s:%d] -> ", symbolAux->nombre, symbolAux->valor);
-            } else {
-                printf("[%s] -> ", symbolAux->nombre);
-            }
-            symbolAux = symbolAux->next;
+        while (aux != NULL) {
+            freeSymbol(aux);
+            aux = aux->next;
         }
-        printf("NULL\n");
-        printf("ʌ\n");
-        printf("|\n");
-        levelAux = levelAux->next;
     }
+
+    // creo que no deberia liberar la lista entera. los otros simbolos estan apuntados por nodos del ast
+    //if (s->next) {
+    //    freeSymbol(s->next);
+    //}
+
+    free(s);
 }

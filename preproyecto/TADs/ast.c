@@ -25,6 +25,9 @@ void freeAST(ASTNode * root) {
     if (root) { // si no es NULL libera la memoria
         freeAST(root->left);
         freeAST(root->right);
+
+        //if (root->nombre) free(root->nombre);
+        if (root->simbolo) freeSymbol(root->simbolo);
         free(root);
     }
 }
