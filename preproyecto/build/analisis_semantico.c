@@ -6,7 +6,7 @@ bool checkChildrenType(ASTNode *node, SemanticType type) {
     return (node->left->semanticType == type) && (node->right->semanticType == type);
 }
 
-// funciones para hacer el analsis semantico para cada tipo de nodo del AST
+// funciones para hacer el analisis semantico para cada tipo de nodo del AST
 void analisisNPROG(ASTNode *node, TS *ts);
 void analisisNCUERPO(ASTNode *node, TS *ts);
 void analisisDECL(ASTNode *node, TS *ts);
@@ -17,6 +17,10 @@ void analisisNEXPOR(ASTNode *node, TS *ts);
 void analisisNID(ASTNode *node, TS *ts);
 void analisisNASSIGN(ASTNode *node, TS *ts);
 void analisisNRETURN(ASTNode *node, TS *ts);
+
+void analisisSemanticoAux(ASTNode *root, TS *ts);
+void analisisSemantico(ASTNode *root);
+
 
 void analisisSemanticoAux(ASTNode *root, TS *ts) {
     if (!root) {
@@ -57,7 +61,7 @@ void analisisNPROG(ASTNode *node, TS *ts) {
     
     // TODO: verificar que no intente crear una funcion dentro de otra
     insertarSimbolo(ts, &config);                       
-    abrirNivel(ts);    // nos metemos 1 nivel adentro (adentro de main)
+    abrirNivel(ts); // nos metemos 1 nivel adentro (adentro de main)
     
     if (node->right) { // analizar el cuerpo de la funcion
         analisisSemanticoAux(node->right, ts);
@@ -89,13 +93,13 @@ void analisisDECL(ASTNode *node, TS *ts) {
     if (node->right->nombre) config.nombre = strdup(node->right->nombre);
 
     if (config.tipo == S_VOID) {
-        printf("[ERROR:AS]: no se pueden declarar variables void -> '%s'\n", config.nombre);
+        printf("[ERROR:AS]: no se pueden declarar variables void -> '%s' (linea: %d)\n", config.nombre, node->line);
         exit(EXIT_FAILURE);
     }
 
     bool res = insertarSimbolo(ts, &config);
     if (!res) {
-        printf("[ERROR:AS]: variable redeclarada -> '%s'\n", config.nombre);
+        printf("[ERROR:AS]: variable redeclarada -> '%s' (linea: %d)\n", config.nombre, node->line);
         exit(EXIT_FAILURE);
     }
     node->tieneReturn = false;
@@ -104,8 +108,9 @@ void analisisDECL(ASTNode *node, TS *ts) {
 void analisisNEXPSUMA(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
+    
     if (!checkChildrenType(node, S_INT)) { // la suma esta definida solo para ints
-        printf("[ERROR:AS]: '+' solo esta definida para operandos de tipo int\n");
+        printf("[ERROR:AS]: '+' solo esta definida para operandos de tipo int (linea: %d)\n", node->line);
         
         if (node->left) {
             char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
@@ -130,8 +135,9 @@ void analisisNEXPSUMA(ASTNode *node, TS *ts) {
 void analisisNEXPMULT(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
+    
     if (!checkChildrenType(node, S_INT)) { // la suma esta definida solo para ints
-        printf("[ERROR:AS]: '*' solo esta definida para operandos de tipo int\n");
+        printf("[ERROR:AS]: '*' solo esta definida para operandos de tipo int (linea: %d)\n", node->line);
         
         if (node->left) {
             char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
@@ -156,8 +162,9 @@ void analisisNEXPMULT(ASTNode *node, TS *ts) {
 void analisisNEXPAND(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
+    
     if (!checkChildrenType(node, S_BOOL)) { // la suma esta definida solo para ints
-        printf("[ERROR:AS]: '&&' solo esta definida para operandos de tipo bool\n");
+        printf("[ERROR:AS]: '&&' solo esta definida para operandos de tipo bool (linea: %d)\n", node->line);
         
         if (node->left) {
             char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
@@ -182,8 +189,9 @@ void analisisNEXPAND(ASTNode *node, TS *ts) {
 void analisisNEXPOR(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
+    
     if (!checkChildrenType(node, S_BOOL)) { // la suma esta definida solo para ints
-        printf("[ERROR:AS]: '||' solo esta definida para operandos de tipo bool\n");
+        printf("[ERROR:AS]: '||' solo esta definida para operandos de tipo bool (linea: %d)\n", node->line);
         
         if (node->left) {
             char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
@@ -207,12 +215,14 @@ void analisisNEXPOR(ASTNode *node, TS *ts) {
 
 void analisisNID(ASTNode *node, TS *ts) {
     Symbol *s = buscarSimbolo(ts, node->nombre);
-    if (!s) {
+    
+    if (!s) { // TODO agregar linea al msj
         printf("[ERROR:AS]: variable no declarada -> '%s'\n", node->nombre);
         exit(EXIT_FAILURE);
     } else {
         node->semanticType = s->tipo;
     }
+    
     node->tieneReturn = false;
 }
 
@@ -221,7 +231,7 @@ void analisisNASSIGN(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->right, ts);
     
     if (!checkChildrenType(node, node->left->semanticType)) { // la parte derecha de la asignacion deberia tener el mismo tipo que la parte izquierda
-        printf("[ERROR:AS]: '=' tipo de leftOp es diferente del tipo de rightOp\n");
+        printf("[ERROR:AS]: '=' tipo de leftOp es diferente del tipo de rightOp (linea: %d)\n", node->line);
 
         if (node->left) {
             char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";

@@ -78,10 +78,23 @@
 int    yylex(void);
 void   yyerror(const char *s);
 extern FILE *yyin;
+extern int yylineno;
+
+typedef union GrammarSymbolVal {
+    int     valor;
+    char    *nombre;
+    ASTNode *node;
+} GrammarSymbolVal;
+
+// valores que tienen los tokens de la gramtica
+typedef struct GrammarSymbolInfo {
+    GrammarSymbolVal grammarSymbolVal;
+    int              grammarSymbolLine;
+} GrammarSymbolInfo;
 
 ASTNode *root = NULL;
 
-#line 85 "parser.tab.c"
+#line 98 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -523,9 +536,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    46,    46,    51,    52,    53,    56,    57,    58,    61,
-      62,    63,    64,    65,    66,    67,    68,    71,    74,    75,
-      78
+       0,    59,    59,    65,    66,    67,    70,    71,    72,    75,
+      76,    77,    78,    79,    80,    81,    82,    85,    89,    90,
+      93
 };
 #endif
 
@@ -1328,127 +1341,130 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* p: type MAIN '(' ')' '{' c '}'  */
-#line 46 "parser.y"
+#line 59 "parser.y"
                                { (yyval.node) = newTree(N_PROG, (yyvsp[-6].node), (yyvsp[-1].node));
+                                 (yyval.node)->line = yylineno; // la linea donde arranca main
                                  root = (yyval.node);
                                }
-#line 1336 "parser.tab.c"
+#line 1350 "parser.tab.c"
     break;
 
   case 3: /* type: INT  */
-#line 51 "parser.y"
+#line 65 "parser.y"
            { (yyval.node) = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_INT});  }
-#line 1342 "parser.tab.c"
+#line 1356 "parser.tab.c"
     break;
 
   case 4: /* type: BOOL  */
-#line 52 "parser.y"
+#line 66 "parser.y"
            { (yyval.node) = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_BOOL}); }
-#line 1348 "parser.tab.c"
+#line 1362 "parser.tab.c"
     break;
 
   case 5: /* type: VOID  */
-#line 53 "parser.y"
+#line 67 "parser.y"
            { (yyval.node) = newLeaf(&(ASTLeafConfig){.tipo = N_TYPE, .semanticType = S_VOID}); }
-#line 1354 "parser.tab.c"
+#line 1368 "parser.tab.c"
     break;
 
   case 6: /* c: d c  */
-#line 56 "parser.y"
+#line 70 "parser.y"
                 { (yyval.node) = newTree(N_CUERPO, (yyvsp[-1].node), (yyvsp[0].node)); }
-#line 1360 "parser.tab.c"
+#line 1374 "parser.tab.c"
     break;
 
   case 7: /* c: s c  */
-#line 57 "parser.y"
+#line 71 "parser.y"
                 { (yyval.node) = newTree(N_CUERPO, (yyvsp[-1].node), (yyvsp[0].node)); }
-#line 1366 "parser.tab.c"
+#line 1380 "parser.tab.c"
     break;
 
   case 8: /* c: %empty  */
-#line 58 "parser.y"
+#line 72 "parser.y"
                 { (yyval.node) = NULL; }
-#line 1372 "parser.tab.c"
+#line 1386 "parser.tab.c"
     break;
 
   case 9: /* e: e '+' e  */
-#line 61 "parser.y"
-                      { (yyval.node) = newTree(N_EXP_SUMA, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1378 "parser.tab.c"
+#line 75 "parser.y"
+                      { (yyval.node) = newTree(N_EXP_SUMA, (yyvsp[-2].node), (yyvsp[0].node)); (yyval.node)->line = yylineno; }
+#line 1392 "parser.tab.c"
     break;
 
   case 10: /* e: e '*' e  */
-#line 62 "parser.y"
-                      { (yyval.node) = newTree(N_EXP_MULT, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1384 "parser.tab.c"
+#line 76 "parser.y"
+                      { (yyval.node) = newTree(N_EXP_MULT, (yyvsp[-2].node), (yyvsp[0].node)); (yyval.node)->line = yylineno; }
+#line 1398 "parser.tab.c"
     break;
 
   case 11: /* e: e AND e  */
-#line 63 "parser.y"
-                      { (yyval.node) = newTree(N_EXP_AND, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1390 "parser.tab.c"
+#line 77 "parser.y"
+                      { (yyval.node) = newTree(N_EXP_AND, (yyvsp[-2].node), (yyvsp[0].node)); (yyval.node)->line = yylineno; }
+#line 1404 "parser.tab.c"
     break;
 
   case 12: /* e: e OR e  */
-#line 64 "parser.y"
-                      { (yyval.node) = newTree(N_EXP_OR, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1396 "parser.tab.c"
+#line 78 "parser.y"
+                      { (yyval.node) = newTree(N_EXP_OR, (yyvsp[-2].node), (yyvsp[0].node)); (yyval.node)->line = yylineno; }
+#line 1410 "parser.tab.c"
     break;
 
   case 13: /* e: '(' e ')'  */
-#line 65 "parser.y"
+#line 79 "parser.y"
                       { (yyval.node) = (yyvsp[-1].node); }
-#line 1402 "parser.tab.c"
+#line 1416 "parser.tab.c"
     break;
 
   case 14: /* e: CONSTANTE_NUMERICA  */
-#line 66 "parser.y"
+#line 80 "parser.y"
                       { (yyval.node) = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_INT, .valor = (yyvsp[0].valor), .semanticType = S_INT}); }
-#line 1408 "parser.tab.c"
+#line 1422 "parser.tab.c"
     break;
 
   case 15: /* e: CONSTANTE_BOOLEANA  */
-#line 67 "parser.y"
+#line 81 "parser.y"
                       { (yyval.node) = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_BOOL, .valor = (yyvsp[0].valor), .semanticType = S_BOOL}); }
-#line 1414 "parser.tab.c"
-    break;
-
-  case 16: /* e: ID  */
-#line 68 "parser.y"
-                      { (yyval.node) = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = (yyvsp[0].nombre)}); }
-#line 1420 "parser.tab.c"
-    break;
-
-  case 17: /* s: ID '=' e ';'  */
-#line 71 "parser.y"
-                { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = (yyvsp[-3].nombre)});
-                  (yyval.node) = newTree(N_ASSIGN, leaf, (yyvsp[-1].node)); 
-                }
 #line 1428 "parser.tab.c"
     break;
 
-  case 18: /* s: RETURN e ';'  */
-#line 74 "parser.y"
-                { (yyval.node) = newTree(N_RETURN, (yyvsp[-1].node), NULL); }
+  case 16: /* e: ID  */
+#line 82 "parser.y"
+                      { (yyval.node) = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = (yyvsp[0].nombre)}); }
 #line 1434 "parser.tab.c"
     break;
 
+  case 17: /* s: ID '=' e ';'  */
+#line 85 "parser.y"
+                { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = (yyvsp[-3].nombre)});
+                  (yyval.node) = newTree(N_ASSIGN, leaf, (yyvsp[-1].node)); 
+                  (yyval.node)->line = yylineno;
+                }
+#line 1443 "parser.tab.c"
+    break;
+
+  case 18: /* s: RETURN e ';'  */
+#line 89 "parser.y"
+                { (yyval.node) = newTree(N_RETURN, (yyvsp[-1].node), NULL); (yyval.node)->line = yylineno; }
+#line 1449 "parser.tab.c"
+    break;
+
   case 19: /* s: RETURN ';'  */
-#line 75 "parser.y"
-                { (yyval.node) = newTree(N_RETURN, NULL, NULL); }
-#line 1440 "parser.tab.c"
+#line 90 "parser.y"
+                { (yyval.node) = newTree(N_RETURN, NULL, NULL); (yyval.node)->line = yylineno; }
+#line 1455 "parser.tab.c"
     break;
 
   case 20: /* d: type ID ';'  */
-#line 78 "parser.y"
+#line 93 "parser.y"
                { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = (yyvsp[-1].nombre)}); 
                   (yyval.node) = newTree(N_DECL, (yyvsp[-2].node), leaf); 
+                  (yyval.node)->line = yylineno;
                 }
-#line 1448 "parser.tab.c"
+#line 1464 "parser.tab.c"
     break;
 
 
-#line 1452 "parser.tab.c"
+#line 1468 "parser.tab.c"
 
       default: break;
     }
@@ -1672,11 +1688,11 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 83 "parser.y"
+#line 99 "parser.y"
 
 
 void yyerror(const char *s) {
-    fprintf(stderr, "[SINTAX ERROR]: %s\n", s);
+    fprintf(stderr, "[SINTAX ERROR]: %s (linea: %d)\n", s, yylineno);
 }
 
 int main(int argc, char** argv) {

@@ -8,6 +8,7 @@
 int    yylex(void);
 void   yyerror(const char *s);
 extern FILE *yyin;
+extern int yylineno;
 
 ASTNode *root = NULL;
 %}
@@ -44,6 +45,7 @@ ASTNode *root = NULL;
 
 // convencion: tokens (terminales) van en mayus y los no terminales en minus
 p: type MAIN '(' ')' '{' c '}' { $$ = newTree(N_PROG, $1, $6);
+                                 $$->line = yylineno; // la linea donde arranca main
                                  root = $$;
                                }
 ;
@@ -58,10 +60,10 @@ c: d c          { $$ = newTree(N_CUERPO, $1, $2); }
  | /* lambda */ { $$ = NULL; }
  ;
 
-e: e '+' e            { $$ = newTree(N_EXP_SUMA, $1, $3); }
- | e '*' e            { $$ = newTree(N_EXP_MULT, $1, $3); }
- | e AND e            { $$ = newTree(N_EXP_AND, $1, $3); }
- | e OR e             { $$ = newTree(N_EXP_OR, $1, $3); }
+e: e '+' e            { $$ = newTree(N_EXP_SUMA, $1, $3); $$->line = yylineno; }
+ | e '*' e            { $$ = newTree(N_EXP_MULT, $1, $3); $$->line = yylineno; }
+ | e AND e            { $$ = newTree(N_EXP_AND, $1, $3); $$->line = yylineno; }
+ | e OR e             { $$ = newTree(N_EXP_OR, $1, $3); $$->line = yylineno; }
  | '(' e ')'          { $$ = $2; }
  | CONSTANTE_NUMERICA { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_INT, .valor = $1, .semanticType = S_INT}); }
  | CONSTANTE_BOOLEANA { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_CTE_BOOL, .valor = $1, .semanticType = S_BOOL}); }
@@ -70,20 +72,22 @@ e: e '+' e            { $$ = newTree(N_EXP_SUMA, $1, $3); }
 
 s: ID '=' e ';' { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $1});
                   $$ = newTree(N_ASSIGN, leaf, $3); 
+                  $$->line = yylineno;
                 }
- | RETURN e ';' { $$ = newTree(N_RETURN, $2, NULL); }
- | RETURN ';'   { $$ = newTree(N_RETURN, NULL, NULL); }
+ | RETURN e ';' { $$ = newTree(N_RETURN, $2, NULL); $$->line = yylineno; }
+ | RETURN ';'   { $$ = newTree(N_RETURN, NULL, NULL); $$->line = yylineno; }
  ;
 
 d: type ID ';' { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $2}); 
                   $$ = newTree(N_DECL, $1, leaf); 
+                  $$->line = yylineno;
                 }
 ;
 
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "[SINTAX ERROR]: %s\n", s);
+    fprintf(stderr, "[SINTAX ERROR]: %s (linea: %d)\n", s, yylineno);
 }
 
 int main(int argc, char** argv) {

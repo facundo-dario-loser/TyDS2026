@@ -12,6 +12,7 @@
 %}
 
 %option noyywrap
+%option yylineno
 
 %%
 int                  { debug_lexico("INT\n");                                                                  return INT; }

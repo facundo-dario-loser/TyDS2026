@@ -45,7 +45,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 19 "parser.y"
+#line 32 "parser.y"
 
     #include "../TADs/ast.h"
     #include "../analizador_semantico/analisis_semantico.h"
@@ -79,7 +79,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 25 "parser.y"
+#line 38 "parser.y"
 
     int     valor;
     char    *nombre;
