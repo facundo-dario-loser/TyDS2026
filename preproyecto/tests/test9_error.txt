@@ -1,8 +1,15 @@
-int main() {
-   int x;
-   int y;
-   y = 2;
-   x = 4;
-   x = x + y;
+bool main() {
+   //int x;
+   //int y;
+   //y = 2;
+   //x = 4;
+   //x = x * y;
+
+   bool a;
+   bool b;
+   bool c;
+   a = true;
+   b = false;
+   c = a && b;
    return x; 
 }

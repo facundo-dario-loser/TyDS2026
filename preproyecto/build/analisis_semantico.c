@@ -63,6 +63,8 @@ void analisisNPROG(ASTNode *node, TS *ts) {
     insertarSimbolo(ts, &config);                       
     abrirNivel(ts); // nos metemos 1 nivel adentro (adentro de main)
     
+    node->simbolo = buscarSimbolo(ts, config.nombre);
+
     if (node->right) { // analizar el cuerpo de la funcion
         analisisSemanticoAux(node->right, ts);
         node->tieneReturn = node->right->tieneReturn;
@@ -102,6 +104,7 @@ void analisisDECL(ASTNode *node, TS *ts) {
         printf("[ERROR:AS]: variable redeclarada -> '%s' (linea: %d)\n", config.nombre, node->line);
         exit(EXIT_FAILURE);
     }
+
     node->tieneReturn = false;
 }
 
@@ -220,7 +223,8 @@ void analisisNID(ASTNode *node, TS *ts) {
         printf("[ERROR:AS]: variable no declarada -> '%s'\n", node->nombre);
         exit(EXIT_FAILURE);
     } else {
-        node->semanticType = s->tipo;
+        node->semanticType = s->tipo; // lo dejo apuntando para el interprete
+        node->simbolo = s;
     }
     
     node->tieneReturn = false;

@@ -1,6 +1,5 @@
 #include "interprete.h"
 
-void interpretarNDECL(ASTNode *node, TS *ts);
 void interpretarNEXPSUMA(ASTNode *node, TS *ts);
 void interpretarNEXPMULT(ASTNode *node, TS *ts);
 void interpretarNEXPAND(ASTNode *node, TS *ts);
@@ -19,7 +18,7 @@ void interpreteAux(ASTNode *root, TS *ts) {
         case N_TYPE:                                     break;
         case N_CUERPO:   interpreteAux(root->left, ts);
                          interpreteAux(root->right, ts); break;
-        case N_DECL:     interpretarNDECL(root, ts);     break;
+        case N_DECL:                                     break;
         case N_EXP_SUMA: interpretarNEXPSUMA(root, ts);  break;
         case N_EXP_MULT: interpretarNEXPMULT(root, ts);  break;
         case N_EXP_AND:  interpretarNEXPAND(root, ts);   break;
@@ -42,17 +41,6 @@ void interprete(ASTNode *root) {
     }
 
     interpreteAux(root, &ts);
-}
-
-void interpretarNDECL(ASTNode *node, TS *ts) {
-    SymbolConfig config = (SymbolConfig){
-            .flag = S_VARIABLE,
-            .nombre = node->right->nombre,
-            .valor = 0, // si todavia no se uso la variable, esta inicializada en 0
-        };
-
-        insertarSimbolo(ts, &config);
-        node->valorExp = 0;
 }
 
 void interpretarNEXPSUMA(ASTNode *node, TS *ts) {
@@ -99,15 +87,13 @@ void interpretarNCTEBOOL(ASTNode *node, TS *ts) {
 
 void interpretarNID(ASTNode *node, TS *ts) {
     debug_interprete("NID")
-    Symbol *s = buscarSimbolo(ts, node->nombre);
-    node->valorExp = s->valor;
+    node->valorExp = node->simbolo->valor;
 }
 
 void interpretarNASSIGN(ASTNode *node, TS *ts) {
     debug_interprete("NASSIGN")
     interpreteAux(node->right, ts);
-    Symbol *s = buscarSimbolo(ts, node->left->nombre);
-    s->valor = node->right->valorExp;
+    node->left->simbolo->valor = node->right->valorExp;
 }
 
 void interpretarNRETURN(ASTNode *node, TS *ts) {

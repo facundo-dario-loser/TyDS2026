@@ -12,3 +12,5 @@
 - para el interprete: inicializar todas las variables en la tabal de simbolos con 0;
 
 - usar el campo 'simbolo' en ast.h (creoq ue no lo uso). para evitar llamar siempre a buscarSImbolo()
+
+- todo agregar linea al msj de variable no declarada (analisis_semantico.c -> void analisisNID(ASTNode *node, TS *ts))

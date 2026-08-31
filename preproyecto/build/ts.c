@@ -16,14 +16,14 @@ void cerrarNivel(TS *ts) {
     Level *oldTope = ts->tope;
     ts->tope       = ts->tope->next;
 
-    // primero liberar todos los simbolos del nivel
-    Symbol *aux = oldTope->head;
+    // no deberia borrar los simbolos de este nivel porque estan apuntados por nodos del ast
+    //Symbol *aux = oldTope->head;
 
-    while (aux != NULL) {
-        Symbol *nextSymbol = aux->next;
-        free(aux);
-        aux = nextSymbol;
-    }
+    //while (aux != NULL) {
+    //    Symbol *nextSymbol = aux->next;
+    //    free(aux);
+    //    aux = nextSymbol;
+    //}
 
     // luego liberar el nivel
     free(oldTope);
