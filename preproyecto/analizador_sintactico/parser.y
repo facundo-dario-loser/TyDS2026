@@ -4,6 +4,7 @@
 
 #include "../TADs/ast.h"
 #include "../analizador_semantico/analisis_semantico.h"
+#include "../interprete/interprete.h"
 
 int    yylex(void);
 void   yyerror(const char *s);
@@ -112,6 +113,8 @@ int main(int argc, char** argv) {
 
     analisisSemantico(root);
     printf("[LOG]: analisis semantico completado\n");
+
+    interprete(root);
 
     return res;
 }

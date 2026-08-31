@@ -1,5 +1,14 @@
-- contar lineas con flex para tirar la linea del error en el analisis semantico
 - hacer que las referencias de una misma variable del ast apunten directamente todas al mismo simbolo en al tabla de simbolos
 - sacar el main de parser.y
 - en ast.h hacer que el arbol use mejor una union adentro apra guardar valo de nombre, valor, etc (para ahorra memoria y no usar tantos campos)
 - usar mas uniones en estructuras par no desperdiciar memoria con una banda de campos
+
+- agregar linea de error pero apra algunos casos especificos?
+
+- para el interprete, deberia ignorar las declaraciones o dropearlas?
+
+- para el interprete deberia usar la misma TS del analisis semantico? o deberia crear una nueva? creo que es mas limpio crear una nueva (y para el futuro es ams extendible)
+
+- para el interprete: inicializar todas las variables en la tabal de simbolos con 0;
+
+- usar el campo 'simbolo' en ast.h (creoq ue no lo uso). para evitar llamar siempre a buscarSImbolo()

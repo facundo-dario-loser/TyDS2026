@@ -38,6 +38,7 @@ typedef struct ASTNode {
     SemanticType   semanticType; // para saber si la expresion/id es int-bool-void
     bool           tieneReturn;  // permite saber si en una rama existe un return (es util para analizar semanticamente los valroes de retorno de funciones)
     int            line;         // linea en el prog del token
+    int            valorExp;     // para guardar el resultado de expresion (+, *, &&, *) se usa el interprete
 } ASTNode;
 
 // estructura para rellenar los campos al crear un nodo hoja y pasarle la estructura a newLeaf
@@ -46,7 +47,6 @@ typedef struct ASTLeafConfig {
     int          valor;
     char         *nombre;
     SemanticType semanticType;
-    int          line; //?? creo que no hace falta
 } ASTLeafConfig;
 
 // crear hoja

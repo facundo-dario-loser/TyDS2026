@@ -91,3 +91,26 @@ void printTS(TS *ts) {
         levelAux = levelAux->next;
     }
 }
+
+void debugTS(TS *ts) {
+    printf("****TS****\n");
+    Level *levelAux = ts->tope;
+    Symbol *symbolAux;
+
+    while (levelAux != NULL) {
+        symbolAux = levelAux->head;
+
+        while (symbolAux != NULL) {
+            if (symbolAux->flag = S_VARIABLE) {
+                printf("[%s:%d] -> ", symbolAux->nombre, symbolAux->valor);
+            } else {
+                printf("[%s] -> ", symbolAux->nombre);
+            }
+            symbolAux = symbolAux->next;
+        }
+        printf("NULL\n");
+        printf("ʌ\n");
+        printf("|\n");
+        levelAux = levelAux->next;
+    }
+}

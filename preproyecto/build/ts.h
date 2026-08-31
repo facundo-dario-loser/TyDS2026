@@ -24,6 +24,7 @@ typedef struct Symbol { // lista enlazada de simbolos para un nivel
     Flag          flag;
     char          *nombre;
     SemanticType  tipo;
+    int           valor; // para int's y bool's (se usa en el interprete)
     struct Symbol *parametros;
     struct Symbol *next;
 } Symbol;
@@ -32,6 +33,7 @@ typedef struct SymbolConfig { // sirve para rellenar los campos que se deseen al
     Flag          flag;
     char          *nombre;
     SemanticType  tipo;
+    int           valor;
     struct Symbol *parametros;
 } SymbolConfig;
 
@@ -50,6 +52,7 @@ void cerrarNivel(TS *ts);
 bool insertarSimbolo(TS *ts, SymbolConfig *config); // lo hace en el nivel del tope. retorna false si la variable a insertar ya fue declarada en el mismo scope
 Symbol * buscarSimbolo(TS *ts, char *nombre);       // si no encuentra el simbolo retorna NULL
 void printTS(TS *ts);
+void debugTS(TS *ts);                               // printea la ts junto con los valores asociados a cada variable
 
 // TODO: agregar una funcion para liberar la memoria de la tabla de simbolos
 
