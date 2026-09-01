@@ -109,3 +109,16 @@ void freeSymbol(Symbol *s) {
 
     free(s);
 }
+
+void freeTS(TS *ts) {
+    if (!ts) return;
+
+    while (ts->tope) {
+        Level *l = ts->tope;
+        ts->tope = ts->tope->next;
+        free(l);
+    }
+
+    // deberia liberar ts??
+}
+

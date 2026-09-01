@@ -49,6 +49,7 @@ void analisisSemantico(ASTNode *root) {
    TS ts;
    initTS(&ts);
    analisisSemanticoAux(root, &ts);
+   freeTS(&ts);
 }
 
 void analisisNPROG(ASTNode *node, TS *ts) {

@@ -1,17 +1,14 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "../TADs/ast.h"
-#include "../analizador_semantico/analisis_semantico.h"
-#include "../interprete/interprete.h"
 
-int    yylex(void);
-void   yyerror(const char *s);
+int  yylex(void);
+void yyerror(const char *s);
+
 extern FILE *yyin;
-extern int yylineno;
-
-ASTNode *root = NULL;
+extern int  yylineno;
+ASTNode     *root = NULL;
 %}
 
 // para hacer mejores logs cuando hay un error de sintaxis
@@ -20,7 +17,6 @@ ASTNode *root = NULL;
 // para que meta las bibliotecas en parser.tab.h
 %code requires {
     #include "../TADs/ast.h"
-    #include "../analizador_semantico/analisis_semantico.h"
 }
 
 // valores/datos que pueden tener los tokens
@@ -46,7 +42,7 @@ ASTNode *root = NULL;
 
 // convencion: tokens (terminales) van en mayus y los no terminales en minus
 p: type MAIN '(' ')' '{' c '}' { $$ = newTree(N_PROG, $1, $6);
-                                 $$->line = $1->line; // la linea donde arranca main (bison hace LALR por ende 'p' se termina de procesar al final y termina arrojando la ultima linea)
+                                 $$->line = $1->line; // la linea donde arranca main (bison hace LALR por ende 'p' se termina de procesar al final y termina arrojando la ultima linea si no hago esto)
                                  root = $$;
                                }
 ;
@@ -92,30 +88,3 @@ void yyerror(const char *s) {
     fprintf(stderr, "[SINTAX ERROR]: %s (linea: %d)\n", s, yylineno);
 }
 
-int main(int argc, char** argv) {
-    ++argv;
-    --argc;
-
-    if (argc > 0) {
-        yyin = fopen(argv[0], "r");
-    } else {
-        yyin = stdin;
-    }
-
-    int res = yyparse();
-
-    if (res == 0) printf("[LOG]: analisis sintactico completado\n");
-    
-    #ifdef DEBUG_AST
-        printf("\n****AST****:\n");
-        printAST(root);
-        printf("\n");
-    #endif
-
-    analisisSemantico(root);
-    printf("[LOG]: analisis semantico completado\n");
-
-    interprete(root);
-
-    return res;
-}
