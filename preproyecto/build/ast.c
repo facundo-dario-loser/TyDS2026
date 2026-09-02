@@ -32,7 +32,7 @@ void freeAST(ASTNode * root) {
     }
 }
 
-void printAST(ASTNode *root) {
+void printASTAux(ASTNode *root) {
     if (!root) return;
 
     if (IS_LEAF(root)) {
@@ -51,7 +51,7 @@ void printAST(ASTNode *root) {
         } 
     } else {
         printf("(");
-        if (root->left) printAST(root->left); // izq
+        if (root->left) printASTAux(root->left); // izq
         printf(" ");
 
         switch (root->tipo) { // root
@@ -67,7 +67,13 @@ void printAST(ASTNode *root) {
         }
 
         printf(" ");
-        if (root->right) printAST(root->right); // der
+        if (root->right) printASTAux(root->right); // der
         printf(")");
     }
+}
+
+void printAST(ASTNode *root) {
+    printf("\n[LOG:AST]:\n");
+    printASTAux(root);
+    printf("\n\n");
 }

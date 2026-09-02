@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include "ts.h"
 
-#define CHECK_IS_NOT_NULL(node) if (!n) { printf("[ERROR]: no se pudo alocar memoria para un nodo\n"); exit(-1); }
+#define CHECK_IS_NOT_NULL(node) if (!n) { printf("[ERROR:AST]: no se pudo alocar memoria para un nodo\n"); exit(EXIT_FAILURE); }
 #define IS_LEAF(node) !node->left && !node->right
 
 typedef enum ASTNodeType {
@@ -41,7 +41,8 @@ typedef struct ASTNode {
     int            valorExp;     // para guardar el resultado de expresion (+, *, &&, *) se usa el interprete
 } ASTNode;
 
-// estructura para rellenar los campos al crear un nodo hoja y pasarle la estructura a newLeaf
+// estructura para rellenar los campos al crear un nodo hoja y pasarsela a newLeaf
+// permite usar una unica funcion para crear una hoja (ya que puedo usar solo los campos que me interesan)
 typedef struct ASTLeafConfig {
     ASTNodeType  tipo;
     int          valor;
@@ -49,13 +50,10 @@ typedef struct ASTLeafConfig {
     SemanticType semanticType;
 } ASTLeafConfig;
 
-// crear hoja
 ASTNode * newLeaf(ASTLeafConfig *config);
 
-// crear un arbol binario
 ASTNode * newTree(ASTNodeType tipo, ASTNode *left, ASTNode *right);
 
-// destruye el AST y libera toda la memoria
 void freeAST(ASTNode * root);
 
 // printea el AST estilo haskell

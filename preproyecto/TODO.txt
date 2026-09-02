@@ -1,5 +1,12 @@
-- sacar el main de parser.y
-- en ast.h hacer que el arbol use mejor una union adentro para guardar valor de nombre, valor, etc (para ahorra memoria y no usar tantos campos)
-- usar mas uniones en estructuras par no desperdiciar memoria con una banda de campos
+- [REFACTORIZAR]: en ast.h hacer que el arbol use mejor una union adentro para guardar valor de nombre, valor, etc (para ahorra memoria y no usar tantos campos)
+- [REFACTORIZAR]: usar mas uniones en estructuras par no desperdiciar memoria con una banda de campos
+- [REFACTORIZAR]: en analisis semantico: en assign quiza seria mejor una funcion que solo chequea el tipo dle hijo derecho en lugar de usar checkChildrenType para ambos
+- [REFACTORIZAR]: ser mas consistente con los nombres de los TADs y funciones (o todo en ingles o todo en esp)
+- [REFACTORIZAR]: en analisis_semantico.c y interprete.c hay muchas funciones que hacen cosas muy parecidas. Hacer mejor 1 funcion y parametrizarla con lo que necesite cada nodo mejor 
 
-- en analisis semantico: en assign quiza seria mejor una funcion que solo chequea el tipo dle hijo derecho en lugar de usar checkChildrenType para ambos
+- [DUDA]: en ts.h/ts.c -> void freeTS(TS *ts): deberia liberar ts?
+
+- [MODIFICAR]: cambiar el makefile para compilar cada archivo desde su respectiva carpeta y no mover cada archivo a la carpeta build
+- [MODIFICAR]: ver si en parser.y puedo sacar '%code requires' metiendo en lexico.l los includes necesarios
+
+- [IMPLEMENTAR]: ver como generar el pseudo assembly

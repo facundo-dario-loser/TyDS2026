@@ -41,7 +41,8 @@ ASTNode     *root = NULL;
 %%
 
 // convencion: tokens (terminales) van en mayus y los no terminales en minus
-p: type MAIN '(' ')' '{' c '}' { $$ = newTree(N_PROG, $1, $6);
+p: type MAIN '(' ')' '{' c '}' { 
+                                 $$ = newTree(N_PROG, $1, $6);
                                  $$->line = $1->line; // la linea donde arranca main (bison hace LALR por ende 'p' se termina de procesar al final y termina arrojando la ultima linea si no hago esto)
                                  root = $$;
                                }
@@ -67,7 +68,8 @@ e: e '+' e            { $$ = newTree(N_EXP_SUMA, $1, $3); $$->line = yylineno; }
  | ID                 { $$ = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $1}); $$->line = yylineno; }
  ;
 
-s: ID '=' e ';' { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $1});
+s: ID '=' e ';' { 
+                  ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $1});
                   leaf->line = yylineno;
                   $$ = newTree(N_ASSIGN, leaf, $3); 
                   $$->line = yylineno;
@@ -76,7 +78,8 @@ s: ID '=' e ';' { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre
  | RETURN ';'   { $$ = newTree(N_RETURN, NULL, NULL); $$->line = yylineno; }
  ;
 
-d: type ID ';' { ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $2}); 
+d: type ID ';' { 
+                  ASTNode *leaf = newLeaf(&(ASTLeafConfig){.tipo = N_ID, .nombre = $2}); 
                   $$ = newTree(N_DECL, $1, leaf); 
                   $$->line = yylineno;
                 }

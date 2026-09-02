@@ -12,7 +12,9 @@ programa : analizador_lexico/lexico.l analizador_sintactico/parser.y
 	cp TADs/ts.c build/ts.c
 	cp interprete/interprete.h build/
 	cp interprete/interprete.c build/
-	gcc build/parser.tab.c build/lex.yy.c build/ts.c build/ast.c build/analisis_semantico.c build/interprete.c main.c -o build/main
+	cp pseudo_asm/ir_asm.h build/
+	cp pseudo_asm/ir_asm.c build/
+	gcc build/parser.tab.c build/lex.yy.c build/ts.c build/ast.c build/analisis_semantico.c build/interprete.c build/ir_asm.c main.c -o build/main
 
 test : build/main
 	./build/main tests/test9_error.txt	

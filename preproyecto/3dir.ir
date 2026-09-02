@@ -1,0 +1,4 @@
+ASIGMENT 2 NULL x 
+ADD x 4 t1 
+ASIGMENT t1 NULL y 
+RET y NULL _ 
