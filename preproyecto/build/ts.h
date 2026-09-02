@@ -12,6 +12,7 @@ typedef enum Flag {
     S_VARIABLE,
     S_FUNCION,
     S_PARAMETRO,
+    S_CONSTANTE, // se usa en el generador de pseudo assembly
 } Flag;
 
 typedef enum SemanticType {

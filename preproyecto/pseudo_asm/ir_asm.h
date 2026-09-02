@@ -8,7 +8,7 @@
 
 // pseudo assembly usando codigo de 3 direcciones
 
-// TODO: ponerle el prefijo IR_ a cada elem del enum
+// TODO: ponerle el prefijo IR a cada elem del enum
 typedef enum InstructionType {
     ADD,
     MULTIPLICATION,

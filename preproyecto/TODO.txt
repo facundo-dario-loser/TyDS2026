@@ -5,8 +5,22 @@
 - [REFACTORIZAR]: en analisis_semantico.c y interprete.c hay muchas funciones que hacen cosas muy parecidas. Hacer mejor 1 funcion y parametrizarla con lo que necesite cada nodo mejor 
 
 - [DUDA]: en ts.h/ts.c -> void freeTS(TS *ts): deberia liberar ts?
+- [DUDA]: consultar sobre la forma que libero actualmente el AST. quiza hay alguna forma mas eficinete o podria usar arenas
 
 - [MODIFICAR]: cambiar el makefile para compilar cada archivo desde su respectiva carpeta y no mover cada archivo a la carpeta build
 - [MODIFICAR]: ver si en parser.y puedo sacar '%code requires' metiendo en lexico.l los includes necesarios
+- [MODIFICAR]: en ir_asm.h -> ponerle el prefijo IR a cada elem del enum  por las dudas
 
-- [IMPLEMENTAR]: ver como generar el pseudo assembly
+- [IMPLEMENTAR]: liberar todos los simbolos luego de generar el pseudo asm 
+- [IMPLEMENTAR]: ahcer que en todos los nodos del arbol el campo nombre apunte a un string que surja de hacer malloc para poder liberarlo de forma segura luego
+
+- [NOTA]: creo que no tiene sentido freeTS() porque al temrinar el analsis semantico cada vez que se cierra un nivel se libera memoria
+- [NOTA]: en analisis semantico tener cuidado apra luego que estoy cerrando nivel en el return
+
+-[RANDOM]: correr gdb
+gcc -g build/parser.tab.c build/lex.yy.c build/ts.c build/ast.c build/analisis_semantico.c build/interprete.c build/ir_asm.c main.c -o build/main
+gdb ./build/main
+run tests/test9_error.txt
+
+- [NOTAS]: cuando tenga que meter otro hijo mas a cada nodo del ast -> crear el campo 'middle'
+

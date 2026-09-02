@@ -46,10 +46,10 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
 }
 
 void analisisSemantico(ASTNode *root) {
-   TS ts;
-   initTS(&ts);
-   analisisSemanticoAux(root, &ts);
-   freeTS(&ts);
+   TS *ts = (TS*)malloc(sizeof(TS));
+   initTS(ts);
+   analisisSemanticoAux(root, ts);
+   freeTS(ts);
 }
 
 void analisisNPROG(ASTNode *node, TS *ts) {
@@ -94,6 +94,7 @@ void analisisDECL(ASTNode *node, TS *ts) {
     config.flag = S_VARIABLE;
     config.tipo = node->left->semanticType;
     config.valor = 0; // todas las variables al declararlas se inicializan con 0
+    config.parametros = NULL;
     if (node->right->nombre) config.nombre = strdup(node->right->nombre);
 
     if (config.tipo == S_VOID) {

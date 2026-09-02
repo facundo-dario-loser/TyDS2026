@@ -1,10 +1,6 @@
 #include "ir_asm.h"
 
-// NOTA: al encontrar nodos de suma o cts's crear simbolos y dejar que los nodos apunten a eso
-// ??para constantes no se si es necesario
-// para resutlados de expresiones tampoco creo. uso el constador global de temporales
-
-// luego de escribir cada instruccion deberia liberar cada simbolo
+void generarPseudoAsmAux(ASTNode *root, FILE *f, int *temporalesCount);
 
 void generarPseudoAsmNEXPSUMA(ASTNode *node, FILE *f, int *temporalesCount);
 void generarPseudoAsmNEXPMULT(ASTNode *node, FILE *f, int *temporalesCount);
@@ -16,6 +12,25 @@ void generarPseudoAsmNASSIGN(ASTNode *node, FILE *f, int *temporalesCount);
 void generarPseudoAsmNRETURN(ASTNode *node, FILE *f, int *temporalesCount);
 
 void escribirInstruccion(Instruction *i, FILE *f);
+
+void generarPseudoAsm(ASTNode *root) {
+    if (!root) {
+        printf("[ERROR:IR]: root es NULL\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // lleva la cuenta de variables temporales para usar con resultados de expresiones
+    int temporalesCount = 0;
+
+    FILE *f = fopen("3dir.ir", "w");
+    generarPseudoAsmAux(root, f, &temporalesCount);
+    fclose(f);
+
+    // liberamos la memoria de todos los nodos del arbol (y por ende todos los simbolos creados)
+    freeAST(root);
+
+    printf("[LOG]: generacion de pseudo assembly completado\n");
+}
 
 void generarPseudoAsmAux(ASTNode *root, FILE *f, int *temporalesCount) {
     if (!root) return;
@@ -39,20 +54,6 @@ void generarPseudoAsmAux(ASTNode *root, FILE *f, int *temporalesCount) {
     }
 }
 
-void generarPseudoAsm(ASTNode *root) {
-    if (!root) {
-        printf("[ERROR:IR]: root es NULL\n");
-        exit(EXIT_FAILURE);
-    }
-
-    // lleva la cuenta de variables temporales para usar con resutlados de expresiones o constantes
-    int temporalesCount = 0;
-
-    FILE *f = fopen("3dir.ir", "w");
-    generarPseudoAsmAux(root, f, &temporalesCount);
-    fclose(f);
-}
-
 void escribirInstruccion(Instruction *i, FILE *f) {
     char strType[64];
     char strOp1[64];
@@ -61,12 +62,12 @@ void escribirInstruccion(Instruction *i, FILE *f) {
     char inst[1024] = ""; // para guardar el resultado de toda la instruccion
 
     switch (i->type) {
-        case ADD:            strcpy(strType, "ADD"); break;
+        case ADD:            strcpy(strType, "ADD");            break;
         case MULTIPLICATION: strcpy(strType, "MULTIPLICATION"); break;
-        case AND:            strcpy(strType, "AND"); break;
-        case OR:             strcpy(strType, "OR"); break;
-        case ASSIGNMENT:     strcpy(strType, "ASIGMENT"); break;
-        case RET:            strcpy(strType, "RET"); break;
+        case AND:            strcpy(strType, "AND");            break;
+        case OR:             strcpy(strType, "OR");             break;
+        case ASSIGNMENT:     strcpy(strType, "ASSIGNMENT");     break;
+        case RET:            strcpy(strType, "RET");            break;
     }
 
     i->op1    ? strcpy(strOp1, i->op1->nombre) : strcpy(strOp1, "NULL");
@@ -102,15 +103,18 @@ void generarPseudoAsmNEXPSUMA(ASTNode *node, FILE *f, int *temporalesCount) {
     snprintf(strTempCount, 8, "%d", *temporalesCount);
     strcat(tempNombre, strTempCount);
 
-    Symbol *temp = (Symbol*)malloc(sizeof(Symbol));
-    temp->nombre = strdup(tempNombre);
+    Symbol *temp     = (Symbol*)malloc(sizeof(Symbol));
+    temp->nombre     = strdup(tempNombre);
+    temp->flag       = S_VARIABLE;
+    temp->tipo       = S_INT;
+    temp->parametros = NULL;
 
     node->simbolo = temp;
     
     Instruction i = (Instruction) {
-        .type = ADD,
-        .op1 = node->left->simbolo,
-        .op2 = node->right->simbolo,
+        .type   = ADD,
+        .op1    = node->left->simbolo,
+        .op2    = node->right->simbolo,
         .result = temp,
     };
 
@@ -130,15 +134,18 @@ void generarPseudoAsmNEXPMULT(ASTNode *node, FILE *f, int *temporalesCount) {
     snprintf(strTempCount, 8, "%d", *temporalesCount);
     strcat(tempNombre, strTempCount);
 
-    Symbol *temp = (Symbol*)malloc(sizeof(Symbol));
-    temp->nombre = strdup(tempNombre);
+    Symbol *temp     = (Symbol*)malloc(sizeof(Symbol));
+    temp->nombre     = strdup(tempNombre);
+    temp->flag       = S_VARIABLE;
+    temp->tipo       = S_INT;
+    temp->parametros = NULL;
 
     node->simbolo = temp;
     
     Instruction i = (Instruction) {
-        .type = MULTIPLICATION,
-        .op1 = node->left->simbolo,
-        .op2 = node->right->simbolo,
+        .type   = MULTIPLICATION,
+        .op1    = node->left->simbolo,
+        .op2    = node->right->simbolo,
         .result = temp,
     };
 
@@ -158,15 +165,18 @@ void generarPseudoAsmNEXPAND(ASTNode *node, FILE *f, int *temporalesCount) {
     snprintf(strTempCount, 8, "%d", *temporalesCount);
     strcat(tempNombre, strTempCount);
 
-    Symbol *temp = (Symbol*)malloc(sizeof(Symbol));
-    temp->nombre = strdup(tempNombre);
+    Symbol *temp     = (Symbol*)malloc(sizeof(Symbol));
+    temp->nombre     = strdup(tempNombre);
+    temp->flag       = S_VARIABLE;
+    temp->tipo       = S_BOOL;
+    temp->parametros = NULL;
 
     node->simbolo = temp;
     
     Instruction i = (Instruction) {
-        .type = AND,
-        .op1 = node->left->simbolo,
-        .op2 = node->right->simbolo,
+        .type   = AND,
+        .op1    = node->left->simbolo,
+        .op2    = node->right->simbolo,
         .result = temp,
     };
 
@@ -186,15 +196,18 @@ void generarPseudoAsmNEXPOR(ASTNode *node, FILE *f, int *temporalesCount) {
     snprintf(strTempCount, 8, "%d", *temporalesCount);
     strcat(tempNombre, strTempCount);
 
-    Symbol *temp = (Symbol*)malloc(sizeof(Symbol));
-    temp->nombre = strdup(tempNombre);
+    Symbol *temp     = (Symbol*)malloc(sizeof(Symbol));
+    temp->nombre     = strdup(tempNombre);
+    temp->flag       = S_VARIABLE;
+    temp->tipo       = S_BOOL;
+    temp->parametros = NULL;
 
     node->simbolo = temp;
     
     Instruction i = (Instruction) {
-        .type = OR,
-        .op1 = node->left->simbolo,
-        .op2 = node->right->simbolo,
+        .type   = OR,
+        .op1    = node->left->simbolo,
+        .op2    = node->right->simbolo,
         .result = temp,
     };
 
@@ -206,8 +219,13 @@ void generarPseudoAsmNCTEINT(ASTNode *node, FILE *f, int *temporalesCount) {
     char strCteInt[8];
     snprintf(strCteInt, 8, "%d", node->valor);
 
-    Symbol *s = (Symbol*)malloc(sizeof(Symbol));
-    s->nombre = strdup(strCteInt);
+    Symbol *s     = (Symbol*)malloc(sizeof(Symbol));
+    s->flag       = S_CONSTANTE;
+    s->nombre     = strdup(strCteInt);
+    s->tipo       = S_INT;
+    s->valor      = node->valor;
+    s->parametros = NULL;
+    
     node->simbolo = s;
 }
 
@@ -215,8 +233,13 @@ void generarPseudoAsmNCTEBOOL(ASTNode *node, FILE *f, int *temporalesCount) {
     char strCteBool[8];
     node->valor ? strcpy(strCteBool, "true") : strcpy(strCteBool, "false");
 
-    Symbol *s = (Symbol*)malloc(sizeof(Symbol));
-    s->nombre = strdup(strCteBool);
+    Symbol *s     = (Symbol*)malloc(sizeof(Symbol));
+    s->flag       = S_CONSTANTE;
+    s->nombre     = strdup(strCteBool);
+    s->tipo       = S_BOOL;
+    s->valor      = node->valor;
+    s->parametros = NULL;
+
     node->simbolo = s;
 }
 
@@ -224,40 +247,25 @@ void generarPseudoAsmNASSIGN(ASTNode *node, FILE *f, int *temporalesCount) {
     // primero generas las instrucciones para la expresion del hijo derecho
     generarPseudoAsmAux(node->right, f, temporalesCount);
     
-    // simbolo para el resultado de la expresion
-    char tempNombre[24] = "t";
-    char strTempCount[8];
-
-    snprintf(strTempCount, 8, "%d", *temporalesCount);
-    strcat(tempNombre, strTempCount);
-    
     Instruction i = (Instruction) {
-        .type = ASSIGNMENT,
-        .op1 = node->right->simbolo,
-        .op2 = NULL,
+        .type   = ASSIGNMENT,
+        .op1    = node->right->simbolo,
+        .op2    = NULL,
         .result = node->left->simbolo,
     };
 
     escribirInstruccion(&i, f);
-    (*temporalesCount)++;
 }
 
 void generarPseudoAsmNRETURN(ASTNode *node, FILE *f, int *temporalesCount) {
     // primero generas las instrucciones para la expresion del hijo derecho
     generarPseudoAsmAux(node->left, f, temporalesCount);
     
-    char strResult[2] = "_";
-
-    Symbol *temp = (Symbol*)malloc(sizeof(Symbol));
-    temp->nombre = strdup(strResult);
-
-    node->simbolo = temp;
-    
     Instruction i = (Instruction) {
-        .type = RET,
-        .op1 = node->left->simbolo,
-        .op2 = NULL,
-        .result = temp,
+        .type   = RET,
+        .op1    = node->left->simbolo,
+        .op2    = NULL,
+        .result = NULL,
     };
 
     escribirInstruccion(&i, f);

@@ -21,15 +21,37 @@ ASTNode * newTree(ASTNodeType tipo, ASTNode *left, ASTNode *right) {
     return n;
 }
 
-void freeAST(ASTNode * root) {
-    if (root) { // si no es NULL libera la memoria
-        freeAST(root->left);
-        freeAST(root->right);
+// setea en null el puntero al simbolo de todos los nodos del arbol que apunten al mismo simbolo que symbolPointer, menos root
+void setAllSymbolPointerNULL(ASTNode *current, Symbol *symbolPointer) {
+    if (!current || !symbolPointer) return;
+    
+    if (current->simbolo == symbolPointer) current->simbolo = NULL;
+    
+    setAllSymbolPointerNULL(current->left, symbolPointer);
+    setAllSymbolPointerNULL(current->right, symbolPointer);
+}
 
-        //if (root->nombre) free(root->nombre);
-        if (root->simbolo) freeSymbol(root->simbolo);
-        free(root);
+void freeASTAux(ASTNode *node, ASTNode *root) {
+    if (node) { // si no es NULL libera la memoria
+
+        freeAST(node->left);
+        freeAST(node->right);
+
+        if (root->nombre) free(root->nombre); // es seguro solo si root->nombre apunta a una cadena creada con malloc
+        
+        if (root->simbolo) {
+            // freeASTAux libera bottom->up, pero debo setear los punteros a simbolos up->bottom
+            setAllSymbolPointerNULL(root, node->simbolo);
+            freeSymbol(root->simbolo);
+            root->simbolo = NULL;
+        }
+
+        free(node);
     }
+}
+
+void freeAST(ASTNode * root) {
+    freeASTAux(root, root);
 }
 
 void printASTAux(ASTNode *root) {

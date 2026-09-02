@@ -17,13 +17,6 @@ void cerrarNivel(TS *ts) {
     ts->tope       = ts->tope->next;
 
     // no deberia borrar los simbolos de este nivel porque estan apuntados por nodos del ast
-    //Symbol *aux = oldTope->head;
-
-    //while (aux != NULL) {
-    //    Symbol *nextSymbol = aux->next;
-    //    free(aux);
-    //    aux = nextSymbol;
-    //}
 
     // luego liberar el nivel
     free(oldTope);
@@ -93,6 +86,8 @@ void printTS(TS *ts) {
 }
 
 void freeSymbol(Symbol *s) {
+    if (!s) return;
+    
     if (s->parametros) {
         Symbol *aux = s->parametros;
 
@@ -120,5 +115,11 @@ void freeTS(TS *ts) {
     }
 
     // deberia liberar ts??
+    // porque si 'ts' se crea dinamicamente esta bien, pero si 'ts' no se crea
+    // dinamicamente solo deberia liberar todos los niveles menos 
+    // el puntero 'ts->tope' como tal
+
+    // asumo que la tabla se crea siempre dinamicamente en el analisis semantico
+    free(ts);
 }
 
