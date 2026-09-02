@@ -49,6 +49,7 @@ void analisisSemantico(ASTNode *root) {
    TS *ts = (TS*)malloc(sizeof(TS));
    initTS(ts);
    analisisSemanticoAux(root, ts);
+   cerrarNivel(ts); // cerramos el nivel correspondiente al scope global
    freeTS(ts);
 }
 
@@ -75,7 +76,9 @@ void analisisNPROG(ASTNode *node, TS *ts) {
         char *valRet = (config.tipo == S_INT) ? "int" : "bool";
         printf("[ERROR:AS]: main retorna '%s', pero en el cuerpo no se esta retornando nada (linea: %d)\n", valRet, node->line);
         exit(EXIT_FAILURE);
-    }        
+    }
+    
+    cerrarNivel(ts); // al llegar al final de main salimos del scope interno
 }
 
 void analisisNCUERPO(ASTNode *node, TS *ts) {
@@ -291,6 +294,5 @@ void analisisNRETURN(ASTNode *node, TS *ts) {
             exit(EXIT_FAILURE);
         }
     }
-    cerrarNivel(ts); // en el futuro no necesariamente deberia cerrar el nivel (si esta dentro de un if por ej)
     node->tieneReturn = true;
 }

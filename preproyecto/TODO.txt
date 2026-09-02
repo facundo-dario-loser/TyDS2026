@@ -15,7 +15,7 @@
 - [IMPLEMENTAR]: ahcer que en todos los nodos del arbol el campo nombre apunte a un string que surja de hacer malloc para poder liberarlo de forma segura luego
 
 - [NOTA]: creo que no tiene sentido freeTS() porque al temrinar el analsis semantico cada vez que se cierra un nivel se libera memoria
-- [NOTA]: en analisis semantico tener cuidado apra luego que estoy cerrando nivel en el return
+- [NOTA]: en analisis semantico el caso N_PROG cuando expandamos el compilador en realidad pasara a ser el caso N_FUNCION eventualmente
 
 -[RANDOM]: correr gdb
 gcc -g build/parser.tab.c build/lex.yy.c build/ts.c build/ast.c build/analisis_semantico.c build/interprete.c build/ir_asm.c main.c -o build/main

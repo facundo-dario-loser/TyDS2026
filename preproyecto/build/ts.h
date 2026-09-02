@@ -54,8 +54,7 @@ bool insertarSimbolo(TS *ts, SymbolConfig *config); // lo hace en el nivel del t
 Symbol * buscarSimbolo(TS *ts, char *nombre);       // si no encuentra el simbolo retorna NULL
 void printTS(TS *ts);
 void freeSymbol(Symbol *s);
-void freeTS(TS *ts);                                // libera la pila, pero no elimina los simbolos ya que son usados por el interprete
-
-// TODO: agregar una funcion para liberar la memoria de la tabla de simbolos
+void freeTS(TS *ts);                                // esta funcion solo tiene sentido usarla si 'ts' se creo dinamicamente con malloc
+                                                    // libera la pila, pero no elimina los simbolos ya que son usados por el interprete
 
 #endif // TS_H

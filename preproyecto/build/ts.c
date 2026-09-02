@@ -6,6 +6,8 @@ void initTS(TS *ts) {
 }
 
 void abrirNivel(TS *ts) {
+    if (!ts) return;
+
     Level *l = (Level*)malloc(sizeof(Level)); 
     l->head  = NULL;
     l->next  = ts->tope; 
@@ -13,6 +15,8 @@ void abrirNivel(TS *ts) {
 }
 
 void cerrarNivel(TS *ts) {
+    if (!ts || !ts->tope) return;
+
     Level *oldTope = ts->tope;
     ts->tope       = ts->tope->next;
 
@@ -108,6 +112,7 @@ void freeSymbol(Symbol *s) {
 void freeTS(TS *ts) {
     if (!ts) return;
 
+    // esto en realidad no tiene sentido por que cuando se llama freeTS ya se cerraron todos los niveles
     while (ts->tope) {
         Level *l = ts->tope;
         ts->tope = ts->tope->next;
