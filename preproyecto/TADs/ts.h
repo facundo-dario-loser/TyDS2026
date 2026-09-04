@@ -21,13 +21,14 @@ typedef enum SemanticType {
     S_VOID
 } SemanticType;
 
-typedef struct Symbol { // lista enlazada de simbolos para un nivel
+typedef struct Symbol {
     Flag          flag;
     char          *nombre;
     SemanticType  tipo;
-    int           valor; // para int's y bool's (se usa en el interprete)
-    struct Symbol *parametros;
+    int           valor;       // para int's y bool's (se usa en el interprete)
+    struct Symbol *parametros; // para funciones
     struct Symbol *next;
+    int           refCount;    // contador de referencias (de nodos del ast al simbolo). usado solo para variables
 } Symbol;
 
 typedef struct SymbolConfig { // sirve para rellenar los campos que se deseen al insertar un nuevo simbolo

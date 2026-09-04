@@ -25,7 +25,6 @@ int main(int argc, char **argv) {
     }
 
     int res = yyparse();
-
     if (res == 0) printf("[LOG]: analisis sintactico completado\n");
 
     #ifdef DEBUG_AST

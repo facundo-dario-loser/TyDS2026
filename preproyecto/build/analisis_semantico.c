@@ -47,7 +47,7 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
 
 void analisisSemantico(ASTNode *root) {
    TS *ts = (TS*)malloc(sizeof(TS));
-   initTS(ts);
+   initTS(ts);      // esta funcion abre el primer nivel (del scope global)
    analisisSemanticoAux(root, ts);
    cerrarNivel(ts); // cerramos el nivel correspondiente al scope global
    freeTS(ts);
@@ -98,6 +98,7 @@ void analisisDECL(ASTNode *node, TS *ts) {
     config.tipo = node->left->semanticType;
     config.valor = 0; // todas las variables al declararlas se inicializan con 0
     config.parametros = NULL;
+
     if (node->right->nombre) config.nombre = strdup(node->right->nombre);
 
     if (config.tipo == S_VOID) {
@@ -231,6 +232,7 @@ void analisisNID(ASTNode *node, TS *ts) {
     } else {
         node->semanticType = s->tipo; // lo dejo apuntando para el interprete
         node->simbolo = s;
+        s->refCount++;
     }
     
     node->tieneReturn = false;

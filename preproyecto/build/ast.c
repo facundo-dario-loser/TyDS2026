@@ -21,7 +21,7 @@ ASTNode * newTree(ASTNodeType tipo, ASTNode *left, ASTNode *right) {
     return n;
 }
 
-// setea en null el puntero al simbolo de todos los nodos del arbol que apunten al mismo simbolo que symbolPointer, menos root
+// setea en null el puntero al simbolo de todos los nodos del arbol que apunten al mismo simbolo que symbolPointer, menos current
 void setAllSymbolPointerNULL(ASTNode *current, Symbol *symbolPointer) {
     if (!current || !symbolPointer) return;
     
@@ -31,19 +31,20 @@ void setAllSymbolPointerNULL(ASTNode *current, Symbol *symbolPointer) {
     setAllSymbolPointerNULL(current->right, symbolPointer);
 }
 
+// se debe llamar con 'freeASTAux(root, root);' en freeAST
 void freeASTAux(ASTNode *node, ASTNode *root) {
     if (node) { // si no es NULL libera la memoria
 
         freeAST(node->left);
         freeAST(node->right);
 
-        if (root->nombre) free(root->nombre); // es seguro solo si root->nombre apunta a una cadena creada con malloc
+        if (node->nombre) free(node->nombre); // es seguro solo si root->nombre apunta a una cadena creada con malloc
         
-        if (root->simbolo) {
+        if (node->simbolo) {
             // freeASTAux libera bottom->up, pero debo setear los punteros a simbolos up->bottom
-            setAllSymbolPointerNULL(root, node->simbolo);
-            freeSymbol(root->simbolo);
-            root->simbolo = NULL;
+            setAllSymbolPointerNULL(root, node->simbolo); // evitar que dejar punteros colgados
+            freeSymbol(node->simbolo);
+            node->simbolo = NULL;
         }
 
         free(node);
@@ -51,7 +52,19 @@ void freeASTAux(ASTNode *node, ASTNode *root) {
 }
 
 void freeAST(ASTNode * root) {
-    freeASTAux(root, root);
+    if (root) {
+        freeAST(root->left);
+        freeAST(root->right);
+
+        if (root->nombre) free(root->nombre);
+
+        if (root->simbolo) {
+            root->simbolo->refCount--;
+            if (root->simbolo->refCount == 0) freeSymbol(root->simbolo);
+        }
+
+        free(root);
+    }
 }
 
 void printASTAux(ASTNode *root) {

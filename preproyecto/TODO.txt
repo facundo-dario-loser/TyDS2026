@@ -11,11 +11,16 @@
 - [MODIFICAR]: ver si en parser.y puedo sacar '%code requires' metiendo en lexico.l los includes necesarios
 - [MODIFICAR]: en ir_asm.h -> ponerle el prefijo IR a cada elem del enum  por las dudas
 
-- [IMPLEMENTAR]: liberar todos los simbolos luego de generar el pseudo asm 
-- [IMPLEMENTAR]: ahcer que en todos los nodos del arbol el campo nombre apunte a un string que surja de hacer malloc para poder liberarlo de forma segura luego
+- [IMPLEMENTAR]: hacer que en todos los nodos del arbol el campo nombre apunte a un string que surja de hacer malloc para poder liberarlo de forma segura luego
+- [IMPLEMENTAR]: agregar macro que permita debugear la tabla de simbolos cada vez que se inserta un nuevo simbolo
+- [IMPLEMENTAR]: una mejor forma de liberar el arbol/simbolos es hacer un contador de referencais en cada simbolo.
+                 entonces cuando quiero liberar un nodo, si este apunta a un simbolo, primero decremento el contador del simbolo y si es 0 libero el simbolo
+-[IMPLEMENTAR]: para gestionar los msjs de error podria crear un enum con los tipos y hacer una funcion que se encargue de imprimir los msjs
 
-- [NOTA]: creo que no tiene sentido freeTS() porque al temrinar el analsis semantico cada vez que se cierra un nivel se libera memoria
+- [NOTA]: creo que no tiene sentido freeTS() porque al terminar el analsis semantico cada vez que se cierra un nivel se libera memoria
 - [NOTA]: en analisis semantico el caso N_PROG cuando expandamos el compilador en realidad pasara a ser el caso N_FUNCION eventualmente
+
+- [ESCRIBIR]: actualizar el readme explicando bien y con instrucciones (explicar la semantica del pseudo asm)
 
 -[RANDOM]: correr gdb
 gcc -g build/parser.tab.c build/lex.yy.c build/ts.c build/ast.c build/analisis_semantico.c build/interprete.c build/ir_asm.c main.c -o build/main
@@ -23,4 +28,6 @@ gdb ./build/main
 run tests/test9_error.txt
 
 - [NOTAS]: cuando tenga que meter otro hijo mas a cada nodo del ast -> crear el campo 'middle'
+
+- [NOTAS]: en el ast los nodos de declaracion no apuntan al simbolo. solo los nodos ID en las sentencias/expresiones
 
