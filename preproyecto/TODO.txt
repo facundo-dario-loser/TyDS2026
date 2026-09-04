@@ -3,31 +3,44 @@
 - [REFACTORIZAR]: en analisis semantico: en assign quiza seria mejor una funcion que solo chequea el tipo dle hijo derecho en lugar de usar checkChildrenType para ambos
 - [REFACTORIZAR]: ser mas consistente con los nombres de los TADs y funciones (o todo en ingles o todo en esp)
 - [REFACTORIZAR]: en analisis_semantico.c y interprete.c hay muchas funciones que hacen cosas muy parecidas. Hacer mejor 1 funcion y parametrizarla con lo que necesite cada nodo mejor 
-
-- [DUDA]: en ts.h/ts.c -> void freeTS(TS *ts): deberia liberar ts?
-- [DUDA]: consultar sobre la forma que libero actualmente el AST. quiza hay alguna forma mas eficinete o podria usar arenas
+- [REFACTORIZAR]: sacar CHECK_IS_NOT_NULL de ast.h/.c y ponerlo como una macro general para cualquier puntero
 
 - [MODIFICAR]: cambiar el makefile para compilar cada archivo desde su respectiva carpeta y no mover cada archivo a la carpeta build
 - [MODIFICAR]: ver si en parser.y puedo sacar '%code requires' metiendo en lexico.l los includes necesarios
-- [MODIFICAR]: en ir_asm.h -> ponerle el prefijo IR a cada elem del enum  por las dudas
 
 - [IMPLEMENTAR]: hacer que en todos los nodos del arbol el campo nombre apunte a un string que surja de hacer malloc para poder liberarlo de forma segura luego
-- [IMPLEMENTAR]: agregar macro que permita debugear la tabla de simbolos cada vez que se inserta un nuevo simbolo
-- [IMPLEMENTAR]: una mejor forma de liberar el arbol/simbolos es hacer un contador de referencais en cada simbolo.
-                 entonces cuando quiero liberar un nodo, si este apunta a un simbolo, primero decremento el contador del simbolo y si es 0 libero el simbolo
--[IMPLEMENTAR]: para gestionar los msjs de error podria crear un enum con los tipos y hacer una funcion que se encargue de imprimir los msjs
+- [IMPLEMENTAR]: para gestionar los msjs de error podria crear un enum con los tipos y hacer una funcion que se encargue de imprimir los msjs
 
 - [NOTA]: creo que no tiene sentido freeTS() porque al terminar el analsis semantico cada vez que se cierra un nivel se libera memoria
-- [NOTA]: en analisis semantico el caso N_PROG cuando expandamos el compilador en realidad pasara a ser el caso N_FUNCION eventualmente
+- [NOTA]: en analisis semantico el caso NODE_PROG cuando expandamos el compilador en realidad pasara a ser el caso N_FUNCION eventualmente
 
-- [ESCRIBIR]: actualizar el readme explicando bien y con instrucciones (explicar la semantica del pseudo asm)
+- [README]: actualizar el readme explicando bien y con instrucciones (explicar la semantica del pseudo asm)
+- [README]: modificar el nombre de TyDS2026 por TDS2026 
+
+- [CARPETAS]: mover analisis lexico/sintactico/semantico dentro de otra carpeta llamada frontend
+
+- [AGREGAR]: meter line dentro de ast config para hacer mas limpio la creacion de hojas
 
 -[RANDOM]: correr gdb
 gcc -g build/parser.tab.c build/lex.yy.c build/ts.c build/ast.c build/analisis_semantico.c build/interprete.c build/ir_asm.c main.c -o build/main
 gdb ./build/main
 run tests/test9_error.txt
 
-- [NOTAS]: cuando tenga que meter otro hijo mas a cada nodo del ast -> crear el campo 'middle'
+- [NOTAS]: cuando tenga que meter otro hijo mas a cada nodo del ast -> crear el campo 'middle'. (voy a tener que modificar printAST para visualizarlo bien)
 
 - [NOTAS]: en el ast los nodos de declaracion no apuntan al simbolo. solo los nodos ID en las sentencias/expresiones
+
+- [NOTAS]: para funciones uso camelCase y para macros snake_case (una forma de que yo las diferencie)
+
+- [NOTAS]: para cuando expanda la gramatica para funciones y generalizar el nombre de la funcion principal:
+%token <nombre> ID MAIN
+$$->nombre = $2;   // el nombre que sea que le haya colocado a la funcion principal
+
+- [DUDA]: en el pseudo assembly podria agarrar y meterle prefijo para saber que es constante, variable, variable temporal
+          constantes: c...
+          variables:  v...
+          temporales: t...
+          ...
+
+- [CONSULTA]: deberia agregar para main la etiqueta main?. podria ahcerlo como una instruccion: LABEL main? o como deberia hacerlo?
 

@@ -27,6 +27,11 @@ void cerrarNivel(TS *ts) {
 }
 
 bool insertarSimbolo(TS *ts, SymbolConfig *config) {
+    if (!ts) {
+        printf("[ERROR:TS:insertarSimbolo]: ts es NULL\n");
+        exit(EXIT_FAILURE);
+    }
+
     // primero chequea que no exista el simbolo en el nivel corriente
     Symbol *aux = ts->tope->head;
 
@@ -46,13 +51,18 @@ bool insertarSimbolo(TS *ts, SymbolConfig *config) {
 
     // inserta siempre a la cabeza
     ts->tope->head = s;
+    debug_ts(ts);
     return true;
 }
 
 Symbol * buscarSimbolo(TS *ts, char *nombre) {
-     Level *nivelActual = ts->tope;
+    if (!ts) {
+        printf("[ERROR:TS:buscarSimbolo]: ts es NULL\n");
+        exit(EXIT_FAILURE);
+    }
+
+    Level *nivelActual = ts->tope;
     
-    // recorremos el nivel del tope al principio
     while (nivelActual != NULL) {
         Symbol *aux = nivelActual->head;
         
@@ -66,7 +76,7 @@ Symbol * buscarSimbolo(TS *ts, char *nombre) {
         nivelActual = nivelActual->next;
     }
     
-    // la variable no fue declarada
+    // el simbolo nunca se creo
     return NULL; 
 }
 
@@ -101,10 +111,7 @@ void freeSymbol(Symbol *s) {
         }
     }
 
-    // creo que no deberia liberar la lista entera. los otros simbolos estan apuntados por nodos del ast
-    //if (s->next) {
-    //    freeSymbol(s->next);
-    //}
+    if (s->nombre) free(s->nombre);
 
     free(s);
 }
@@ -119,12 +126,6 @@ void freeTS(TS *ts) {
         free(l);
     }
 
-    // deberia liberar ts??
-    // porque si 'ts' se crea dinamicamente esta bien, pero si 'ts' no se crea
-    // dinamicamente solo deberia liberar todos los niveles menos 
-    // el puntero 'ts->tope' como tal
-
-    // asumo que la tabla se crea siempre dinamicamente en el analisis semantico
     free(ts);
 }
 

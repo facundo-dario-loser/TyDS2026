@@ -2,7 +2,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include "parser.tab.h"
+    #include "../analizador_sintactico/parser.tab.h"
 
     #ifdef DEBUG_LEXICO
         #define debug_lexico(...) printf(__VA_ARGS__);
@@ -36,5 +36,5 @@ false                { debug_lexico("CONSTANTE_BOOLEANA(%s)\n", yytext);       y
 ";"                  { debug_lexico("SEMICOLON\n");                                                            return ';'; }
 [ \n\t]+             { /* ignorar espacios, new line y tab */ }
 "//".*               { debug_lexico("C_LINEA(%s)\n", yytext); /* se ignora */ }
-.                    { debug_lexico("[ERROR]: token invalido (%s)\n", yytext); exit(-1); }
+.                    { debug_lexico("[ERROR]: token invalido (%s)\n", yytext); exit(EXIT_FAILURE); }
 %%

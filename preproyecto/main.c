@@ -24,8 +24,13 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
+    // analisis sintactico
     int res = yyparse();
-    if (res == 0) printf("[LOG]: analisis sintactico completado\n");
+    if (res == 0) {
+        printf("[LOG]: analisis sintactico completado\n");
+    } else {
+        printf("[ERROR:ANALISIS:SINTACTICO]: hubo un error (yyparse() = 0)\n");
+    }
 
     #ifdef DEBUG_AST
         printAST(root);
@@ -36,6 +41,10 @@ int main(int argc, char **argv) {
 
     //interprete(root);
     generarPseudoAsm(root);
+    printf("[LOG]: generacion de pseudo assembly completado\n");
 
-    return res;
+    // liberamos la memoria de todos los nodos del arbol (y por ende todos los simbolos creados)
+    freeAST(root);
+
+    return 0;
 }

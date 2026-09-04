@@ -8,14 +8,13 @@
 
 // pseudo assembly usando codigo de 3 direcciones
 
-// TODO: ponerle el prefijo IR a cada elem del enum
 typedef enum InstructionType {
-    ADD,
-    MULTIPLICATION,
-    AND,
-    OR,
-    ASSIGNMENT,
-    RET,
+    INSTRUCTION_ADD,
+    INSTRUCTION_MULTIPLICATION,
+    INSTRUCTION_AND,
+    INSTRUCTION_OR,
+    INSTRUCTION_ASSIGNMENT,
+    INSTRUCTION_RET,
 } InstructionType;
 
 typedef struct Instruction {

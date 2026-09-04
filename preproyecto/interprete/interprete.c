@@ -14,20 +14,20 @@ void interprete(ASTNode *root) {
     if (!root) return; // para los hijos NULL
 
     switch (root->tipo) {
-        case N_PROG:     interprete(root->right);    break;
-        case N_TYPE:                                 break;
-        case N_CUERPO:   interprete(root->left);
+        case NODE_PROG:     interprete(root->right);    break;
+        case NODE_TYPE:                                 break;
+        case NODE_CUERPO:   interprete(root->left);
                          interprete(root->right);    break;
-        case N_DECL:                                 break;
-        case N_EXP_SUMA: interpretarNEXPSUMA(root);  break;
-        case N_EXP_MULT: interpretarNEXPMULT(root);  break;
-        case N_EXP_AND:  interpretarNEXPAND(root);   break;
-        case N_EXP_OR:   interpretarNEXPOR(root);    break;
-        case N_CTE_INT:  interpretarNCTEINT(root);   break;
-        case N_CTE_BOOL: interpretarNCTEBOOL(root);  break;
-        case N_ID:       interpretarNID(root);       break;
-        case N_ASSIGN:   interpretarNASSIGN(root);   break;
-        case N_RETURN:   interpretarNRETURN(root);   break;
+        case NODE_DECL:                                 break;
+        case NODE_EXP_SUMA: interpretarNEXPSUMA(root);  break;
+        case NODE_EXP_MULT: interpretarNEXPMULT(root);  break;
+        case NODE_EXP_AND:  interpretarNEXPAND(root);   break;
+        case NODE_EXP_OR:   interpretarNEXPOR(root);    break;
+        case NODE_CTE_INT:  interpretarNCTEINT(root);   break;
+        case NODE_CTE_BOOL: interpretarNCTEBOOL(root);  break;
+        case NODE_ID:       interpretarNID(root);       break;
+        case NODE_ASSIGN:   interpretarNASSIGN(root);   break;
+        case NODE_RETURN:   interpretarNRETURN(root);   break;
     }
 }
 

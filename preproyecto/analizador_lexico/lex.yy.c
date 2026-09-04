@@ -509,7 +509,7 @@ char *yytext;
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include "parser.tab.h"
+    #include "../analizador_sintactico/parser.tab.h"
 
     #ifdef DEBUG_LEXICO
         #define debug_lexico(...) printf(__VA_ARGS__);
@@ -912,7 +912,7 @@ YY_RULE_SETUP
 case 22:
 YY_RULE_SETUP
 #line 39 "lexico.l"
-{ debug_lexico("[ERROR]: token invalido (%s)\n", yytext); exit(-1); }
+{ debug_lexico("[ERROR]: token invalido (%s)\n", yytext); exit(EXIT_FAILURE); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP

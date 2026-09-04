@@ -6,19 +6,25 @@
 #include <string.h>
 #include <stdbool.h>
 
-// tabla de simbolos (implementada como una pila de niveles en donde cada nivel es una lista enlazada)
+#ifdef DEBUG_TS 
+    #define debug_ts(ts) printTS(ts)
+#else
+    #define debug_ts(ts)
+#endif
+
+// Tabla de simbolos (implementada como una pila de niveles en donde cada nivel es una lista enlazada)
 
 typedef enum Flag {
-    S_VARIABLE,
-    S_FUNCION,
-    S_PARAMETRO,
-    S_CONSTANTE, // se usa en el generador de pseudo assembly
+    FLAG_VARIABLE,
+    FLAG_FUNCION,
+    FLAG_PARAMETRO,
+    FLAG_CONSTANTE, // se usa en el generador de pseudo assembly
 } Flag;
 
 typedef enum SemanticType {
-    S_INT,
-    S_BOOL,
-    S_VOID
+    SEMANTIC_TYPE_INT,
+    SEMANTIC_TYPE_BOOL,
+    SEMANTIC_TYPE_VOID
 } SemanticType;
 
 typedef struct Symbol {
@@ -37,6 +43,7 @@ typedef struct SymbolConfig { // sirve para rellenar los campos que se deseen al
     SemanticType  tipo;
     int           valor;
     struct Symbol *parametros;
+    int           refCount;
 } SymbolConfig;
 
 typedef struct Level {

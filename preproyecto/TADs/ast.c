@@ -3,12 +3,13 @@
 ASTNode * newLeaf(ASTLeafConfig *config) {
     ASTNode *n = (ASTNode*)malloc(sizeof(ASTNode));
     CHECK_IS_NOT_NULL(n);
-    n->tipo   = config->tipo;
-    n->valor  = config->valor;
+    n->tipo         = config->tipo;
+    n->valor        = config->valor;
     if (config->nombre) n->nombre = strdup(config->nombre);
-    n->left   = NULL;
-    n->right  = NULL;
+    n->left         = NULL;
+    n->right        = NULL;
     n->semanticType = config->semanticType;
+    n->line         = config->line;
     return n;
 }
 
@@ -19,36 +20,6 @@ ASTNode * newTree(ASTNodeType tipo, ASTNode *left, ASTNode *right) {
     n->left  = left;
     n->right = right;
     return n;
-}
-
-// setea en null el puntero al simbolo de todos los nodos del arbol que apunten al mismo simbolo que symbolPointer, menos current
-void setAllSymbolPointerNULL(ASTNode *current, Symbol *symbolPointer) {
-    if (!current || !symbolPointer) return;
-    
-    if (current->simbolo == symbolPointer) current->simbolo = NULL;
-    
-    setAllSymbolPointerNULL(current->left, symbolPointer);
-    setAllSymbolPointerNULL(current->right, symbolPointer);
-}
-
-// se debe llamar con 'freeASTAux(root, root);' en freeAST
-void freeASTAux(ASTNode *node, ASTNode *root) {
-    if (node) { // si no es NULL libera la memoria
-
-        freeAST(node->left);
-        freeAST(node->right);
-
-        if (node->nombre) free(node->nombre); // es seguro solo si root->nombre apunta a una cadena creada con malloc
-        
-        if (node->simbolo) {
-            // freeASTAux libera bottom->up, pero debo setear los punteros a simbolos up->bottom
-            setAllSymbolPointerNULL(root, node->simbolo); // evitar que dejar punteros colgados
-            freeSymbol(node->simbolo);
-            node->simbolo = NULL;
-        }
-
-        free(node);
-    }
 }
 
 void freeAST(ASTNode * root) {
@@ -72,14 +43,14 @@ void printASTAux(ASTNode *root) {
 
     if (IS_LEAF(root)) {
         switch (root->tipo) {
-            case N_CTE_INT:   { printf("CTE(%d)", root->valor); break; }
-            case N_CTE_BOOL:  { printf("CTE(%s)", root->valor ? "true" : "false"); break; }
-            case N_ID:        { printf("ID(%s)", root->nombre); break; }
-            case N_TYPE:      { char *type;
+            case NODE_CTE_INT:   { printf("CTE(%d)", root->valor); break; }
+            case NODE_CTE_BOOL:  { printf("CTE(%s)", root->valor ? "true" : "false"); break; }
+            case NODE_ID:        { printf("ID(%s)", root->nombre); break; }
+            case NODE_TYPE:      { char *type;
                                 switch (root->semanticType) {
-                                    case S_INT:  type = "int";  break;
-                                    case S_BOOL: type = "bool"; break;
-                                    case S_VOID: type = "void"; break;
+                                    case SEMANTIC_TYPE_INT:  type = "int";  break;
+                                    case SEMANTIC_TYPE_BOOL: type = "bool"; break;
+                                    case SEMANTIC_TYPE_VOID: type = "void"; break;
                                 }
                                 printf("TYPE(%s)", type); break; 
                               }
@@ -90,15 +61,15 @@ void printASTAux(ASTNode *root) {
         printf(" ");
 
         switch (root->tipo) { // root
-            case N_PROG:      { printf("PROG"); break; }
-            case N_CUERPO:    { printf("CUERPO"); break; }
-            case N_DECL:      { printf("DECL"); break; }
-            case N_EXP_SUMA:  { printf("+"); break; }
-            case N_EXP_MULT:  { printf("*"); break; }
-            case N_EXP_AND:   { printf("&&"); break; }
-            case N_EXP_OR:    { printf("||"); break; }
-            case N_ASSIGN:    { printf("="); break; }
-            case N_RETURN:    { printf("RETURN"); break; }
+            case NODE_PROG:      { printf("PROG"); break; }
+            case NODE_CUERPO:    { printf("CUERPO"); break; }
+            case NODE_DECL:      { printf("DECL"); break; }
+            case NODE_EXP_SUMA:  { printf("+"); break; }
+            case NODE_EXP_MULT:  { printf("*"); break; }
+            case NODE_EXP_AND:   { printf("&&"); break; }
+            case NODE_EXP_OR:    { printf("||"); break; }
+            case NODE_ASSIGN:    { printf("="); break; }
+            case NODE_RETURN:    { printf("RETURN"); break; }
         }
 
         printf(" ");

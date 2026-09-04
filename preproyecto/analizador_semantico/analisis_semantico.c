@@ -19,31 +19,7 @@ void analisisNASSIGN(ASTNode *node, TS *ts);
 void analisisNRETURN(ASTNode *node, TS *ts);
 
 void analisisSemanticoAux(ASTNode *root, TS *ts);
-void analisisSemantico(ASTNode *root);
 
-
-void analisisSemanticoAux(ASTNode *root, TS *ts) {
-    if (!root) {
-        printf("[ERROR:AS]: AST vacio\n");
-        exit(EXIT_FAILURE);
-    }
-
-    switch (root->tipo) {
-        case N_PROG:     analisisNPROG(root, ts);    break;
-        case N_TYPE:                                 break;
-        case N_CUERPO:   analisisNCUERPO(root, ts);  break;
-        case N_DECL:     analisisDECL(root, ts);     break;
-        case N_EXP_SUMA: analisisNEXPSUMA(root, ts); break;
-        case N_EXP_MULT: analisisNEXPMULT(root, ts); break;
-        case N_EXP_AND:  analisisNEXPAND(root, ts);  break;
-        case N_EXP_OR:   analisisNEXPOR(root, ts);   break;
-        case N_CTE_INT:                              break;
-        case N_CTE_BOOL:                             break;
-        case N_ID:       analisisNID(root, ts);      break;
-        case N_ASSIGN:   analisisNASSIGN(root, ts);  break;
-        case N_RETURN:   analisisNRETURN(root, ts);  break;
-    }
-}
 
 void analisisSemantico(ASTNode *root) {
    TS *ts = (TS*)malloc(sizeof(TS));
@@ -53,14 +29,38 @@ void analisisSemantico(ASTNode *root) {
    freeTS(ts);
 }
 
+void analisisSemanticoAux(ASTNode *root, TS *ts) {
+    if (!root) {
+        printf("[ERROR:AS]: AST vacio\n");
+        exit(EXIT_FAILURE);
+    }
+
+    switch (root->tipo) {
+        case NODE_PROG:     analisisNPROG(root, ts);    break;
+        case NODE_TYPE:                                 break;
+        case NODE_CUERPO:   analisisNCUERPO(root, ts);  break;
+        case NODE_DECL:     analisisDECL(root, ts);     break;
+        case NODE_EXP_SUMA: analisisNEXPSUMA(root, ts); break;
+        case NODE_EXP_MULT: analisisNEXPMULT(root, ts); break;
+        case NODE_EXP_AND:  analisisNEXPAND(root, ts);  break;
+        case NODE_EXP_OR:   analisisNEXPOR(root, ts);   break;
+        case NODE_CTE_INT:                              break;
+        case NODE_CTE_BOOL:                             break;
+        case NODE_ID:       analisisNID(root, ts);      break;
+        case NODE_ASSIGN:   analisisNASSIGN(root, ts);  break;
+        case NODE_RETURN:   analisisNRETURN(root, ts);  break;
+    }
+}
+
 void analisisNPROG(ASTNode *node, TS *ts) {
     // por ahora solo tenemos la funcion main y nos metemos solo 1 nivel adentro 
-    SymbolConfig config;
-    config.flag       = S_FUNCION;
-    config.nombre     = "main";                   // por ahora solo tenemos la funcion main
-    config.tipo       = node->left->semanticType; // el tipo que retorna main
-    config.parametros = NULL;                     // main no tiene parametros por ahora
-    
+    SymbolConfig config = (SymbolConfig) {
+        .flag       = FLAG_FUNCION,
+        .nombre     = "main",                   // por ahora solo tenemos la funcion main
+        .tipo       = node->left->semanticType, // el tipo que retorna main
+        .parametros = NULL,                     // main no tiene parametros por ahora
+    };
+
     // TODO: verificar que no intente crear una funcion dentro de otra
     insertarSimbolo(ts, &config);                       
     abrirNivel(ts); // nos metemos 1 nivel adentro (adentro de main)
@@ -72,8 +72,8 @@ void analisisNPROG(ASTNode *node, TS *ts) {
         node->tieneReturn = node->right->tieneReturn;
     }
 
-    if ((config.tipo != S_VOID) && !node->tieneReturn) {
-        char *valRet = (config.tipo == S_INT) ? "int" : "bool";
+    if ((config.tipo != SEMANTIC_TYPE_VOID) && !node->tieneReturn) {
+        char *valRet = (config.tipo == SEMANTIC_TYPE_INT) ? "int" : "bool";
         printf("[ERROR:AS]: main retorna '%s', pero en el cuerpo no se esta retornando nada (linea: %d)\n", valRet, node->line);
         exit(EXIT_FAILURE);
     }
@@ -93,20 +93,22 @@ void analisisNCUERPO(ASTNode *node, TS *ts) {
 }
 
 void analisisDECL(ASTNode *node, TS *ts) {
-    SymbolConfig config;
-    config.flag = S_VARIABLE;
-    config.tipo = node->left->semanticType;
-    config.valor = 0; // todas las variables al declararlas se inicializan con 0
-    config.parametros = NULL;
+    SymbolConfig config = (SymbolConfig) {
+        .flag     = FLAG_VARIABLE,
+        .tipo     = node->left->semanticType,
+        .valor    = 0, // todas las variables al declararlas se inicializan con 0(int) / false(bool)
+        .refCount = 0,
+    };
 
     if (node->right->nombre) config.nombre = strdup(node->right->nombre);
 
-    if (config.tipo == S_VOID) {
+    if (config.tipo == SEMANTIC_TYPE_VOID) {
         printf("[ERROR:AS]: no se pueden declarar variables void -> '%s' (linea: %d)\n", config.nombre, node->line);
         exit(EXIT_FAILURE);
     }
 
     bool res = insertarSimbolo(ts, &config);
+
     if (!res) {
         printf("[ERROR:AS]: variable redeclarada -> '%s' (linea: %d)\n", config.nombre, node->line);
         exit(EXIT_FAILURE);
@@ -119,18 +121,18 @@ void analisisNEXPSUMA(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
-    if (!checkChildrenType(node, S_INT)) { // la suma esta definida solo para ints
+    if (!checkChildrenType(node, SEMANTIC_TYPE_INT)) { // la suma esta definida solo para ints
         printf("[ERROR:AS]: '+' solo esta definida para operandos de tipo int (linea: %d)\n", node->line);
         
         if (node->left) {
-            char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
+            char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("\t\tleftOp: %s\n", leftOp);
         } else {
             printf("\t\tleftOp: empty\n");
         }
 
         if (node->right) {
-            char *rightOp = (node->right->semanticType == S_INT) ? "int" : "bool"; 
+            char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
             printf("\t\trightOp: %s\n", rightOp);
         } else {
             printf("\t\trightOp: empty\n");
@@ -138,7 +140,7 @@ void analisisNEXPSUMA(ASTNode *node, TS *ts) {
 
         exit(EXIT_FAILURE);                            
     }
-    node->semanticType = S_INT;
+    node->semanticType = SEMANTIC_TYPE_INT;
     node->tieneReturn = false;
 }
 
@@ -146,18 +148,18 @@ void analisisNEXPMULT(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
-    if (!checkChildrenType(node, S_INT)) { // la suma esta definida solo para ints
+    if (!checkChildrenType(node, SEMANTIC_TYPE_INT)) { // la suma esta definida solo para ints
         printf("[ERROR:AS]: '*' solo esta definida para operandos de tipo int (linea: %d)\n", node->line);
         
         if (node->left) {
-            char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
+            char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("\t\tleftOp: %s\n", leftOp);
         } else {
             printf("\t\tleftOp: empty\n");
         }
 
         if (node->right) {
-            char *rightOp = (node->right->semanticType == S_INT) ? "int" : "bool"; 
+            char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
             printf("\t\trightOp: %s\n", rightOp);
         } else {
             printf("\t\trightOp: empty\n");
@@ -165,7 +167,7 @@ void analisisNEXPMULT(ASTNode *node, TS *ts) {
 
         exit(EXIT_FAILURE);                            
     }
-    node->semanticType = S_INT;
+    node->semanticType = SEMANTIC_TYPE_INT;
     node->tieneReturn = false;
 }
 
@@ -173,18 +175,18 @@ void analisisNEXPAND(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
-    if (!checkChildrenType(node, S_BOOL)) { // la suma esta definida solo para ints
+    if (!checkChildrenType(node, SEMANTIC_TYPE_BOOL)) { // la suma esta definida solo para ints
         printf("[ERROR:AS]: '&&' solo esta definida para operandos de tipo bool (linea: %d)\n", node->line);
         
         if (node->left) {
-            char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
+            char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("\t\tleftOp: %s\n", leftOp);
         } else {
             printf("\t\tleftOp: empty\n");
         }
 
         if (node->right) {
-            char *rightOp = (node->right->semanticType == S_INT) ? "int" : "bool"; 
+            char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
             printf("\t\trightOp: %s\n", rightOp);
         } else {
             printf("\t\trightOp: empty\n");
@@ -192,7 +194,7 @@ void analisisNEXPAND(ASTNode *node, TS *ts) {
 
         exit(EXIT_FAILURE);                            
     }
-    node->semanticType = S_BOOL;
+    node->semanticType = SEMANTIC_TYPE_BOOL;
     node->tieneReturn  = false;
 }
 
@@ -200,18 +202,18 @@ void analisisNEXPOR(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
-    if (!checkChildrenType(node, S_BOOL)) { // la suma esta definida solo para ints
+    if (!checkChildrenType(node, SEMANTIC_TYPE_BOOL)) { // la suma esta definida solo para ints
         printf("[ERROR:AS]: '||' solo esta definida para operandos de tipo bool (linea: %d)\n", node->line);
         
         if (node->left) {
-            char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
+            char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("\t\tleftOp: %s\n", leftOp);
         } else {
             printf("\t\tleftOp: empty\n");
         }
 
         if (node->right) {
-            char *rightOp = (node->right->semanticType == S_INT) ? "int" : "bool"; 
+            char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
             printf("\t\trightOp: %s\n", rightOp);
         } else {
             printf("\t\trightOp: empty\n");
@@ -219,7 +221,7 @@ void analisisNEXPOR(ASTNode *node, TS *ts) {
         
         exit(EXIT_FAILURE);                            
     }
-    node->semanticType = S_BOOL;
+    node->semanticType = SEMANTIC_TYPE_BOOL;
     node->tieneReturn  = false;
 }
 
@@ -230,8 +232,8 @@ void analisisNID(ASTNode *node, TS *ts) {
         printf("[ERROR:AS]: variable no declarada -> '%s' (linea: %d)\n", node->nombre, node->line);
         exit(EXIT_FAILURE);
     } else {
-        node->semanticType = s->tipo; // lo dejo apuntando para el interprete
-        node->simbolo = s;
+        node->semanticType = s->tipo;
+        node->simbolo = s; // lo dejo apuntando para el interprete
         s->refCount++;
     }
     
@@ -246,14 +248,14 @@ void analisisNASSIGN(ASTNode *node, TS *ts) {
         printf("[ERROR:AS]: '=' tipo de leftOp es diferente del tipo de rightOp (linea: %d)\n", node->line);
 
         if (node->left) {
-            char *leftOp = (node->left->semanticType == S_INT) ? "int" : "bool";
+            char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("\t\tleftOp: %s\n", leftOp);
         } else {
             printf("\t\tleftOp: empty\n");
         }
 
         if (node->right) {
-            char *rightOp = (node->right->semanticType == S_INT) ? "int" : "bool"; 
+            char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
             printf("\t\trightOp: %s\n", rightOp);
         } else {
             printf("\t\trightOp: empty\n");
@@ -270,28 +272,28 @@ void analisisNRETURN(ASTNode *node, TS *ts) {
     ASTNode *exp = node->left; // la exp que retorna 'return'
     
     if (exp == NULL) { // si hace 'return;'
-        if (s->tipo != S_VOID) {
-            char *retType = (s->tipo == S_INT) ? "int" : "bool";
+        if (s->tipo != SEMANTIC_TYPE_VOID) {
+            char *retType = (s->tipo == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("[ERROR:AS]: main retorna '%s', pero en la funcion se hace return sin nada (linea: %d)\n", retType, node->line);
             exit(EXIT_FAILURE);
         }
     } else { // si retorna algo 'return exp;'
-        if (s->tipo == S_VOID) {
-            char *retType = (exp->semanticType == S_INT) ? "int" : "bool";
+        if (s->tipo == SEMANTIC_TYPE_VOID) {
+            char *retType = (exp->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("[ERROR:AS]: main no retorna nada (void), pero se esta retornando un '%s' (linea: %d)\n", retType, node->line);
             exit(EXIT_FAILURE);
         }
 
         analisisSemanticoAux(node->left, ts); // analizar la exp que se retorna
 
-        if ((s->tipo == S_INT) && !(exp->semanticType == S_INT)) {
-            char *expType = (exp->semanticType == S_INT) ? "int" : "bool";
+        if ((s->tipo == SEMANTIC_TYPE_INT) && !(exp->semanticType == SEMANTIC_TYPE_INT)) {
+            char *expType = (exp->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("[ERROR:AS]: main retorna un int, pero se esta retornando un '%s' (linea: %d)\n", expType, node->line);
             exit(EXIT_FAILURE);
         }
 
-        if ((s->tipo == S_BOOL) && !(exp->semanticType == S_BOOL)) {
-            char *expType = (exp->semanticType == S_INT) ? "int" : "bool";
+        if ((s->tipo == SEMANTIC_TYPE_BOOL) && !(exp->semanticType == SEMANTIC_TYPE_BOOL)) {
+            char *expType = (exp->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
             printf("[ERROR:AS]: main retorna un bool, pero se esta retornando un '%s' (linea: %d)\n", expType, node->line);
             exit(EXIT_FAILURE);
         }
