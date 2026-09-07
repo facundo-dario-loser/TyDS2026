@@ -20,7 +20,7 @@ typedef enum InstructionType {
 } InstructionType;
 
 typedef struct Instruction {
-    InstructionType type;
+    InstructionType    type;
     Symbol             *op1;
     Symbol             *op2;
     Symbol             *result;
@@ -34,15 +34,14 @@ Instruction * insertarInstruction(Instruction **pHead, Instruction *i);
 // genera el pseudo assembly y construye una lista enlazada en memoria
 Instruction * generarPseudoAsmList(ASTNode *root);
 
-// printea una sola instruccion
 void printInstruction(Instruction *i);
 
-// printea la lista de instrucciones
+// printea toda la lista de instrucciones
 void printInstructions(Instruction *head);
 
 void writeInstruction(Instruction *i, FILE *f);
 
-// escribe la lista de instrucciones en el archivo '3dir.ir'
+// escribe toda la lista de isntrucciones en el archivo '3dir.ir'
 void writeInstructions(Instruction *head);
 
 void freeInstructionList(Instruction *head);

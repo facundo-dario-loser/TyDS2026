@@ -4,8 +4,8 @@
 - [REFACTORIZAR]: ser mas consistente con los nombres de los TADs y funciones (o todo en ingles o todo en esp)
 - [REFACTORIZAR]: en analisis_semantico.c y interprete.c hay muchas funciones que hacen cosas muy parecidas. Hacer mejor 1 funcion y parametrizarla con lo que necesite cada nodo mejor 
 - [REFACTORIZAR]: sacar CHECK_IS_NOT_NULL de ast.h/.c y ponerlo como una macro general para cualquier puntero
+- [REFACTORIZAR]: hacer una solafuncion para crear nodos en el arbol y pasarle la configuracion directamente
 
-- [MODIFICAR]: cambiar el makefile para compilar cada archivo desde su respectiva carpeta y no mover cada archivo a la carpeta build
 - [MODIFICAR]: ver si en parser.y puedo sacar '%code requires' metiendo en lexico.l los includes necesarios
 
 - [IMPLEMENTAR]: hacer que en todos los nodos del arbol el campo nombre apunte a un string que surja de hacer malloc para poder liberarlo de forma segura luego
@@ -36,13 +36,5 @@ run tests/test9_error.txt
 %token <nombre> ID MAIN
 $$->nombre = $2;   // el nombre que sea que le haya colocado a la funcion principal
 
-- [DUDA]: en el pseudo assembly podria agarrar y meterle prefijo para saber que es constante, variable, variable temporal
-          constantes: c...
-          variables:  v...
-          temporales: t...
-          ...
-
-- [CONSULTA]: deberia agregar para main la etiqueta main?. podria ahcerlo como una instruccion: LABEL main? o como deberia hacerlo?
-
-- [IMPLEMENTAR]: en la generacion de pseudo assembly, no escribir en el archivo. Mejor mantener todo en memoria (en una lista enlazada o doblemente enlazada)
-
+- [NOTAS]: es mas seguro liberar los simbolos al ahcer freeAST y no en freeInstructionList 
+           porque en el arbol puede haber simbolos a variables de codigo muerto que no van a estar en la lista de instrucciones 

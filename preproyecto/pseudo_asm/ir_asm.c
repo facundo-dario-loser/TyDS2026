@@ -2,6 +2,7 @@
 
 void generarPseudoAsmListAux(ASTNode *root, Instruction **list, int *temporalesCount);
 
+void generarPseudoAsmNodeProg(ASTNode *node, Instruction **list, int *temporalesCount);
 void generarPseudoAsmNodeExpSuma(ASTNode *node, Instruction **list, int *temporalesCount);
 void generarPseudoAsmNodeExpMult(ASTNode *node, Instruction **list, int *temporalesCount);
 void generarPseudoAsmNodeExpAnd(ASTNode *node, Instruction **list, int *temporalesCount);
@@ -10,8 +11,6 @@ void generarPseudoAsmNodeCteInt(ASTNode *node, Instruction **list, int *temporal
 void generarPseudoAsmNodeCteBool(ASTNode *node, Instruction **list, int *temporalesCount);
 void generarPseudoAsmNodeAssign(ASTNode *node, Instruction **list, int *temporalesCount);
 void generarPseudoAsmNodeReturn(ASTNode *node, Instruction **list, int *temporalesCount);
-
-void printInstructions(Instruction *head);
 
 Instruction * insertarInstruction(Instruction **pHead, Instruction *i) {
     i->prev = NULL;
@@ -40,7 +39,7 @@ void generarPseudoAsmListAux(ASTNode *root, Instruction **list, int *temporalesC
     if (!root) return;
 
     switch (root->tipo) {
-        case NODE_PROG:     generarPseudoAsmListAux(root->right, list, temporalesCount); break;
+        case NODE_PROG:     generarPseudoAsmNodeProg(root, list, temporalesCount);       break;
         case NODE_TYPE:                                                                  break;
         case NODE_CUERPO:   generarPseudoAsmListAux(root->left, list, temporalesCount); 
                             generarPseudoAsmListAux(root->right, list, temporalesCount); break;
@@ -55,6 +54,25 @@ void generarPseudoAsmListAux(ASTNode *root, Instruction **list, int *temporalesC
         case NODE_ASSIGN:   generarPseudoAsmNodeAssign(root, list, temporalesCount);     break;
         case NODE_RETURN:   generarPseudoAsmNodeReturn(root, list, temporalesCount);     break;
     }
+}
+
+void generarPseudoAsmNodeProg(ASTNode *node, Instruction **list, int *temporalesCount) {
+    // por ahora solo tenemos la funcion main
+    Instruction *i1 = (Instruction*)malloc(sizeof(Instruction));
+    i1->type = INSTRUCTION_BEGIN_FUNCTION;
+    i1->op1 = NULL;
+    i1->op2 = NULL;
+    i1->result = node->simbolo;
+
+    Instruction *i2 = (Instruction*)malloc(sizeof(Instruction));
+    i2->type = INSTRUCTION_END_FUNCTION;
+    i2->op1 = NULL;
+    i2->op2 = NULL;
+    i2->result = node->simbolo;
+
+    insertarInstruction(list, i1);
+    generarPseudoAsmListAux(node->right, list, temporalesCount);
+    insertarInstruction(list, i2);
 }
 
 void generarPseudoAsmNodeExpSuma(ASTNode *node, Instruction **list, int *temporalesCount) {
@@ -248,12 +266,12 @@ void generarPseudoAsmNodeReturn(ASTNode *node, Instruction **list, int *temporal
     insertarInstruction(list, i);
 }
 
-void printInstruction(Instruction *i) {
+void getInstructionStr(Instruction *i, char inst[1024]) {
     char strType[64];
     char strOp1[64];
     char strOp2[64];
     char strResult[64];
-    char inst[1024] = ""; // para guardar el resultado de toda la instruccion
+    //char inst[1024] = ""; // para guardar el resultado de toda la instruccion
 
     switch (i->type) {
         case INSTRUCTION_ADD:            strcpy(strType, "ADD");            break;
@@ -262,6 +280,8 @@ void printInstruction(Instruction *i) {
         case INSTRUCTION_OR:             strcpy(strType, "OR");             break;
         case INSTRUCTION_ASSIGNMENT:     strcpy(strType, "ASSIGNMENT");     break;
         case INSTRUCTION_RET:            strcpy(strType, "RET");            break;
+        case INSTRUCTION_BEGIN_FUNCTION: strcpy(strType, "BEGIN_FUNCTION"); break;
+        case INSTRUCTION_END_FUNCTION:   strcpy(strType, "END_FUNCTION");   break;
     }
 
     i->op1    ? strcpy(strOp1, i->op1->nombre) : strcpy(strOp1, "NULL");
@@ -281,7 +301,11 @@ void printInstruction(Instruction *i) {
     strcat(inst, strOp2);
     strcat(inst, strResult);
     strcat(inst, "\n");
+}
 
+void printInstruction(Instruction *i) {
+    char inst[1024] = "";
+    getInstructionStr(i, inst);
     printf("%s", inst);
 }
 
@@ -300,39 +324,8 @@ void printInstructions(Instruction *head) {
 }
 
 void writeInstruction(Instruction *i, FILE *f) {
-        char strType[64];
-    char strOp1[64];
-    char strOp2[64];
-    char strResult[64];
-    char inst[1024] = ""; // para guardar el resultado de toda la instruccion
-
-    switch (i->type) {
-        case INSTRUCTION_ADD:            strcpy(strType, "ADD");            break;
-        case INSTRUCTION_MULTIPLICATION: strcpy(strType, "MULTIPLICATION"); break;
-        case INSTRUCTION_AND:            strcpy(strType, "AND");            break;
-        case INSTRUCTION_OR:             strcpy(strType, "OR");             break;
-        case INSTRUCTION_ASSIGNMENT:     strcpy(strType, "ASSIGNMENT");     break;
-        case INSTRUCTION_RET:            strcpy(strType, "RET");            break;
-    }
-
-    i->op1    ? strcpy(strOp1, i->op1->nombre) : strcpy(strOp1, "NULL");
-    i->op2    ? strcpy(strOp2, i->op2->nombre) : strcpy(strOp2, "NULL");
-    i->result ? strcpy(strResult, i->result->nombre) : strcpy(strResult, "NULL");
-
-    // agregar espacios entre cada parte de la instruccion
-    char space[2] = " ";
-    strcat(strType, space);
-    strcat(strOp1, space);
-    strcat(strOp2, space);
-    strcat(strResult, space);
-
-    // concatenar todas las partes
-    strcat(inst, strType);
-    strcat(inst, strOp1);
-    strcat(inst, strOp2);
-    strcat(inst, strResult);
-    strcat(inst, "\n");
-
+    char inst[1024] = "";
+    getInstructionStr(i, inst);
     fprintf(f, "%s", inst);
 }
 

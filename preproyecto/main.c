@@ -57,8 +57,8 @@ int main(int argc, char **argv) {
     } else {
         //generarPseudoAsmFile(root);
         Instruction *head = generarPseudoAsmList(root);
-        //printInstructions(head);
-        writeInstructions(head);
+        printInstructions(head);
+        //writeInstructions(head);
         printf("[LOG]: generacion de pseudo assembly completado\n"); 
         freeInstructionList(head);
     }
