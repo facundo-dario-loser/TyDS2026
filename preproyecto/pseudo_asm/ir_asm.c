@@ -59,19 +59,19 @@ void generarPseudoAsmListAux(ASTNode *root, Instruction **list, int *temporalesC
 void generarPseudoAsmNodeProg(ASTNode *node, Instruction **list, int *temporalesCount) {
     // por ahora solo tenemos la funcion main
     Instruction *i1 = (Instruction*)malloc(sizeof(Instruction));
-    i1->type = INSTRUCTION_BEGIN_FUNCTION;
-    i1->op1 = NULL;
-    i1->op2 = NULL;
+    i1->type   = INSTRUCTION_BEGIN_FUNCTION;
+    i1->op1    = NULL;
+    i1->op2    = NULL;
     i1->result = node->simbolo;
 
     Instruction *i2 = (Instruction*)malloc(sizeof(Instruction));
-    i2->type = INSTRUCTION_END_FUNCTION;
-    i2->op1 = NULL;
-    i2->op2 = NULL;
+    i2->type   = INSTRUCTION_END_FUNCTION;
+    i2->op1    = NULL;
+    i2->op2    = NULL;
     i2->result = node->simbolo;
 
     insertarInstruction(list, i1);
-    generarPseudoAsmListAux(node->right, list, temporalesCount);
+    generarPseudoAsmListAux(node->right, list, temporalesCount); // instrucciones del cuerpo de la func
     insertarInstruction(list, i2);
 }
 
@@ -258,7 +258,7 @@ void generarPseudoAsmNodeReturn(ASTNode *node, Instruction **list, int *temporal
     };
 
     Instruction *i = (Instruction*)malloc(sizeof(Instruction));
-    i->type = INSTRUCTION_RET;
+    i->type   = INSTRUCTION_RET;
     i->op1    = node->left->simbolo;
     i->op2    = NULL;
     i->result = NULL;
@@ -317,10 +317,14 @@ void printInstructions(Instruction *head) {
         aux = aux->next;
     }
 
+    printf("\n");
+
     while (aux != NULL) {
         printInstruction(aux);
         aux = aux->prev;
     }
+
+    printf("\n");
 }
 
 void writeInstruction(Instruction *i, FILE *f) {

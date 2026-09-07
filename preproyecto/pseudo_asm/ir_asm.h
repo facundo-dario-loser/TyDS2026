@@ -9,14 +9,14 @@
 // pseudo assembly usando codigo de 3 direcciones
 
 typedef enum InstructionType {
-    INSTRUCTION_ADD,
-    INSTRUCTION_MULTIPLICATION,
-    INSTRUCTION_AND,
-    INSTRUCTION_OR,
-    INSTRUCTION_ASSIGNMENT,
-    INSTRUCTION_RET,
-    INSTRUCTION_BEGIN_FUNCTION,
-    INSTRUCTION_END_FUNCTION
+    INSTRUCTION_ADD,            // sumar int's
+    INSTRUCTION_MULTIPLICATION, // multiplicar int's
+    INSTRUCTION_AND,            // and logico entre bool's
+    INSTRUCTION_OR,             // or logico entre bool's
+    INSTRUCTION_ASSIGNMENT,     // asignacion para int's y bool's
+    INSTRUCTION_RET,            // return
+    INSTRUCTION_BEGIN_FUNCTION, // label para indicar donde comienza la funcion
+    INSTRUCTION_END_FUNCTION    // label para indicar donde temrmina la funcion
 } InstructionType;
 
 typedef struct Instruction {

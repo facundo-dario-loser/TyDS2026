@@ -55,12 +55,11 @@ int main(int argc, char **argv) {
         interprete(root);
         printf("[LOG]: el interprete finalizo su ejecucion\n");
     } else {
-        //generarPseudoAsmFile(root);
         Instruction *head = generarPseudoAsmList(root);
-        printInstructions(head);
-        //writeInstructions(head);
         printf("[LOG]: generacion de pseudo assembly completado\n"); 
-        freeInstructionList(head);
+        //writeInstructions(head);
+        printInstructions(head);
+        freeInstructionList(head); // NOTA: cuando genere assembly no deberia liberar la lista aca
     }
 
     // liberamos la memoria de todos los nodos del arbol (y por ende todos los simbolos creados)
