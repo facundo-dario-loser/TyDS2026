@@ -44,3 +44,5 @@ $$->nombre = $2;   // el nombre que sea que le haya colocado a la funcion princi
 
 - [CONSULTA]: deberia agregar para main la etiqueta main?. podria ahcerlo como una instruccion: LABEL main? o como deberia hacerlo?
 
+- [IMPLEMENTAR]: en la generacion de pseudo assembly, no escribir en el archivo. Mejor mantener todo en memoria (en una lista enlazada o doblemente enlazada)
+

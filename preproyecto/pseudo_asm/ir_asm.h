@@ -15,15 +15,36 @@ typedef enum InstructionType {
     INSTRUCTION_OR,
     INSTRUCTION_ASSIGNMENT,
     INSTRUCTION_RET,
+    INSTRUCTION_BEGIN_FUNCTION,
+    INSTRUCTION_END_FUNCTION
 } InstructionType;
 
 typedef struct Instruction {
     InstructionType type;
-    Symbol          *op1;
-    Symbol          *op2;
-    Symbol          *result;
+    Symbol             *op1;
+    Symbol             *op2;
+    Symbol             *result;
+    struct Instruction *next; // lista doblemente enlazada
+    struct Instruction *prev;
 } Instruction;
 
-void generarPseudoAsm(ASTNode *root);
+// inserta la instruccion 'i'a la cabeza y retorna la nueva cabeza (que es 'i')
+Instruction * insertarInstruction(Instruction **pHead, Instruction *i);
+
+// genera el pseudo assembly y construye una lista enlazada en memoria
+Instruction * generarPseudoAsmList(ASTNode *root);
+
+// printea una sola instruccion
+void printInstruction(Instruction *i);
+
+// printea la lista de instrucciones
+void printInstructions(Instruction *head);
+
+void writeInstruction(Instruction *i, FILE *f);
+
+// escribe la lista de instrucciones en el archivo '3dir.ir'
+void writeInstructions(Instruction *head);
+
+void freeInstructionList(Instruction *head);
 
 #endif // ASM_H

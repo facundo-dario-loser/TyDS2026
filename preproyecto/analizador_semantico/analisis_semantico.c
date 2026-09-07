@@ -7,16 +7,16 @@ bool checkChildrenType(ASTNode *node, SemanticType type) {
 }
 
 // funciones para hacer el analisis semantico para cada tipo de nodo del AST
-void analisisNPROG(ASTNode *node, TS *ts);
-void analisisNCUERPO(ASTNode *node, TS *ts);
-void analisisDECL(ASTNode *node, TS *ts);
-void analisisNEXPSUMA(ASTNode *node, TS *ts);
-void analisisNEXPMULT(ASTNode *node, TS *ts);
-void analisisNEXPAND(ASTNode *node, TS *ts);
-void analisisNEXPOR(ASTNode *node, TS *ts);
-void analisisNID(ASTNode *node, TS *ts);
-void analisisNASSIGN(ASTNode *node, TS *ts);
-void analisisNRETURN(ASTNode *node, TS *ts);
+void analisisNodeProg(ASTNode *node, TS *ts);
+void analisisNodeCuerpo(ASTNode *node, TS *ts);
+void analisisNodeDecl(ASTNode *node, TS *ts);
+void analisisNodeExpSuma(ASTNode *node, TS *ts);
+void analisisNodeExpMult(ASTNode *node, TS *ts);
+void analisisNodeExpAnd(ASTNode *node, TS *ts);
+void analisisNodeExpOr(ASTNode *node, TS *ts);
+void analisisNodeId(ASTNode *node, TS *ts);
+void analisisNodeAssign(ASTNode *node, TS *ts);
+void analisisNodeReturn(ASTNode *node, TS *ts);
 
 void analisisSemanticoAux(ASTNode *root, TS *ts);
 
@@ -36,23 +36,23 @@ void analisisSemanticoAux(ASTNode *root, TS *ts) {
     }
 
     switch (root->tipo) {
-        case NODE_PROG:     analisisNPROG(root, ts);    break;
-        case NODE_TYPE:                                 break;
-        case NODE_CUERPO:   analisisNCUERPO(root, ts);  break;
-        case NODE_DECL:     analisisDECL(root, ts);     break;
-        case NODE_EXP_SUMA: analisisNEXPSUMA(root, ts); break;
-        case NODE_EXP_MULT: analisisNEXPMULT(root, ts); break;
-        case NODE_EXP_AND:  analisisNEXPAND(root, ts);  break;
-        case NODE_EXP_OR:   analisisNEXPOR(root, ts);   break;
-        case NODE_CTE_INT:                              break;
-        case NODE_CTE_BOOL:                             break;
-        case NODE_ID:       analisisNID(root, ts);      break;
-        case NODE_ASSIGN:   analisisNASSIGN(root, ts);  break;
-        case NODE_RETURN:   analisisNRETURN(root, ts);  break;
+        case NODE_PROG:     analisisNodeProg(root, ts);    break;
+        case NODE_TYPE:                                    break;
+        case NODE_CUERPO:   analisisNodeCuerpo(root, ts);  break;
+        case NODE_DECL:     analisisNodeDecl(root, ts);    break;
+        case NODE_EXP_SUMA: analisisNodeExpSuma(root, ts); break;
+        case NODE_EXP_MULT: analisisNodeExpMult(root, ts); break;
+        case NODE_EXP_AND:  analisisNodeExpAnd(root, ts);  break;
+        case NODE_EXP_OR:   analisisNodeExpOr(root, ts);   break;
+        case NODE_CTE_INT:                                 break;
+        case NODE_CTE_BOOL:                                break;
+        case NODE_ID:       analisisNodeId(root, ts);      break;
+        case NODE_ASSIGN:   analisisNodeAssign(root, ts);  break;
+        case NODE_RETURN:   analisisNodeReturn(root, ts);  break;
     }
 }
 
-void analisisNPROG(ASTNode *node, TS *ts) {
+void analisisNodeProg(ASTNode *node, TS *ts) {
     // por ahora solo tenemos la funcion main y nos metemos solo 1 nivel adentro 
     SymbolConfig config = (SymbolConfig) {
         .flag       = FLAG_FUNCION,
@@ -81,7 +81,7 @@ void analisisNPROG(ASTNode *node, TS *ts) {
     cerrarNivel(ts); // al llegar al final de main salimos del scope interno
 }
 
-void analisisNCUERPO(ASTNode *node, TS *ts) {
+void analisisNodeCuerpo(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     if (node->right) analisisSemanticoAux(node->right, ts);
     
@@ -92,7 +92,7 @@ void analisisNCUERPO(ASTNode *node, TS *ts) {
     node->tieneReturn = leftTieneReturn || rightTieneReturn;
 }
 
-void analisisDECL(ASTNode *node, TS *ts) {
+void analisisNodeDecl(ASTNode *node, TS *ts) {
     SymbolConfig config = (SymbolConfig) {
         .flag     = FLAG_VARIABLE,
         .tipo     = node->left->semanticType,
@@ -117,7 +117,7 @@ void analisisDECL(ASTNode *node, TS *ts) {
     node->tieneReturn = false;
 }
 
-void analisisNEXPSUMA(ASTNode *node, TS *ts) {
+void analisisNodeExpSuma(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
@@ -144,7 +144,7 @@ void analisisNEXPSUMA(ASTNode *node, TS *ts) {
     node->tieneReturn = false;
 }
 
-void analisisNEXPMULT(ASTNode *node, TS *ts) {
+void analisisNodeExpMult(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
@@ -171,7 +171,7 @@ void analisisNEXPMULT(ASTNode *node, TS *ts) {
     node->tieneReturn = false;
 }
 
-void analisisNEXPAND(ASTNode *node, TS *ts) {
+void analisisNodeExpAnd(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
@@ -198,7 +198,7 @@ void analisisNEXPAND(ASTNode *node, TS *ts) {
     node->tieneReturn  = false;
 }
 
-void analisisNEXPOR(ASTNode *node, TS *ts) {
+void analisisNodeExpOr(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
@@ -225,7 +225,7 @@ void analisisNEXPOR(ASTNode *node, TS *ts) {
     node->tieneReturn  = false;
 }
 
-void analisisNID(ASTNode *node, TS *ts) {
+void analisisNodeId(ASTNode *node, TS *ts) {
     Symbol *s = buscarSimbolo(ts, node->nombre);
     
     if (!s) {
@@ -240,7 +240,7 @@ void analisisNID(ASTNode *node, TS *ts) {
     node->tieneReturn = false;
 }
 
-void analisisNASSIGN(ASTNode *node, TS *ts) {
+void analisisNodeAssign(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
@@ -266,7 +266,7 @@ void analisisNASSIGN(ASTNode *node, TS *ts) {
     node->tieneReturn = false;
 }
 
-void analisisNRETURN(ASTNode *node, TS *ts) {
+void analisisNodeReturn(ASTNode *node, TS *ts) {
     // hay que chequear que se retorne lo mismo que en el perfil de main
     Symbol *s = buscarSimbolo(ts, "main");
     ASTNode *exp = node->left; // la exp que retorna 'return'
