@@ -5,18 +5,17 @@
 #include "interprete/interprete.h"
 #include "pseudo_asm/ir_asm.h"
 
-extern ASTNode *root;
-extern FILE    *yyin;
-extern int     yyparse();
-
 typedef enum ArgumentFlag {
     INTERPRETE,
     GENERADOR_PSEUDO_ASSEMBLY
 } ArgumentFlag;
 
-ArgumentFlag flag;
-
 ArgumentFlag getArgumentFlag(int argc, char **argv);
+
+extern ASTNode *root;
+extern FILE    *yyin;
+extern int     yyparse();
+ArgumentFlag   flag;
 
 int main(int argc, char **argv) {
     ++argv;
@@ -57,7 +56,6 @@ int main(int argc, char **argv) {
     } else {
         Instruction *head = generarPseudoAsmList(root);
         printf("[LOG]: generacion de pseudo assembly completado\n"); 
-        //writeInstructions(head);
         printInstructions(head);
         freeInstructionList(head); // NOTA: cuando genere assembly no deberia liberar la lista aca
     }
@@ -72,7 +70,7 @@ ArgumentFlag getArgumentFlag(int argc, char **argv) {
     if (!(argc >= 1)) {
         printf("[ERROR]: no se indico ningun flag. Uso:\n");
         printf("\t\t-i para ejecutar el interprete\n");
-        printf("\t\t-s para ejecutar el generador de pseudo assembly\n");
+        printf("\t\t-p para ejecutar el generador de pseudo assembly\n");
         exit(EXIT_FAILURE);
     } else {
         if (strcmp(argv[0], "-i") == 0) {
@@ -82,7 +80,7 @@ ArgumentFlag getArgumentFlag(int argc, char **argv) {
         } else {
             printf("[ERROR]: no se indico ningun flag. Uso:\n");
             printf("\t\t-i para ejecutar el interprete\n");
-            printf("\t\t-s para ejecutar el generador de pseudo assembly\n");
+            printf("\t\t-p para ejecutar el generador de pseudo assembly\n");
             exit(EXIT_FAILURE);
         }
     }

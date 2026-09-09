@@ -32,7 +32,7 @@ bool insertarSimbolo(TS *ts, SymbolConfig *config) {
         exit(EXIT_FAILURE);
     }
 
-    // primero chequea que no exista el simbolo en el nivel corriente
+    // primero chequear que no exista el simbolo en el nivel corriente
     Symbol *aux = ts->tope->head;
 
     while (aux != NULL) {
@@ -76,7 +76,7 @@ Symbol * buscarSimbolo(TS *ts, char *nombre) {
         nivelActual = nivelActual->next;
     }
     
-    // el simbolo nunca se creo
+    // el simbolo no existe
     return NULL; 
 }
 

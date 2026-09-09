@@ -12,7 +12,7 @@ void generarPseudoAsmNodeCteBool(ASTNode *node, Instruction **list, int *tempora
 void generarPseudoAsmNodeAssign(ASTNode *node, Instruction **list, int *temporalesCount);
 void generarPseudoAsmNodeReturn(ASTNode *node, Instruction **list, int *temporalesCount);
 
-Instruction * insertarInstruction(Instruction **pHead, Instruction *i) {
+void insertarInstruction(Instruction **pHead, Instruction *i) {
     i->prev = NULL;
     i->next = *pHead;
 
@@ -193,9 +193,9 @@ void generarPseudoAsmNodeExpOr(ASTNode *node, Instruction **list, int *temporale
     node->simbolo = temp;
 
     Instruction *i = (Instruction*)malloc(sizeof(Instruction));
-    i->type = INSTRUCTION_OR;
-    i->op1 = node->left->simbolo;
-    i->op2 = node->right->simbolo;
+    i->type   = INSTRUCTION_OR;
+    i->op1    = node->left->simbolo;
+    i->op2    = node->right->simbolo;
     i->result = temp;
 
     insertarInstruction(list, i);
@@ -238,9 +238,9 @@ void generarPseudoAsmNodeAssign(ASTNode *node, Instruction **list, int *temporal
     generarPseudoAsmListAux(node->right, list, temporalesCount);
 
     Instruction *i = (Instruction*)malloc(sizeof(Instruction));
-    i->type = INSTRUCTION_ASSIGNMENT;
-    i->op1 = node->right->simbolo;
-    i->op2 = NULL;
+    i->type   = INSTRUCTION_ASSIGNMENT;
+    i->op1    = node->right->simbolo;
+    i->op2    = NULL;
     i->result = node->left->simbolo;
 
     insertarInstruction(list, i);

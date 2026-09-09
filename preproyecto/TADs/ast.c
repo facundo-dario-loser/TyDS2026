@@ -41,19 +41,19 @@ void freeAST(ASTNode * root) {
 void printASTAux(ASTNode *root) {
     if (!root) return;
 
-    if (IS_LEAF(root)) {
+    if (!root->left && !root->right) { // es una hoja
         switch (root->tipo) {
             case NODE_CTE_INT:   { printf("CTE(%d)", root->valor); break; }
             case NODE_CTE_BOOL:  { printf("CTE(%s)", root->valor ? "true" : "false"); break; }
             case NODE_ID:        { printf("ID(%s)", root->nombre); break; }
             case NODE_TYPE:      { char *type;
-                                switch (root->semanticType) {
-                                    case SEMANTIC_TYPE_INT:  type = "int";  break;
-                                    case SEMANTIC_TYPE_BOOL: type = "bool"; break;
-                                    case SEMANTIC_TYPE_VOID: type = "void"; break;
+                                   switch (root->semanticType) {
+                                     case SEMANTIC_TYPE_INT:  type = "int";  break;
+                                     case SEMANTIC_TYPE_BOOL: type = "bool"; break;
+                                     case SEMANTIC_TYPE_VOID: type = "void"; break;
+                                   }
+                                   printf("TYPE(%s)", type); break; 
                                 }
-                                printf("TYPE(%s)", type); break; 
-                              }
         } 
     } else {
         printf("(");

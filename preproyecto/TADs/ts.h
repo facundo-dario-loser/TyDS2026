@@ -1,6 +1,8 @@
 #ifndef TS_H
 #define TS_H
 
+// Tabla de simbolos (implementada como una pila de niveles en donde cada nivel es una lista enlazada)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,8 +13,6 @@
 #else
     #define debug_ts(ts)
 #endif
-
-// Tabla de simbolos (implementada como una pila de niveles en donde cada nivel es una lista enlazada)
 
 typedef enum Flag {
     FLAG_VARIABLE,
@@ -31,13 +31,15 @@ typedef struct Symbol {
     Flag          flag;
     char          *nombre;
     SemanticType  tipo;
-    int           valor;       // para int's y bool's (se usa en el interprete)
+    int           valor;       // para int's y bool's
     struct Symbol *parametros; // para funciones
     struct Symbol *next;
-    int           refCount;    // contador de referencias (de nodos del ast al simbolo). usado solo para variables
+    int           refCount;    // contador de referencias (de nodos del ast apuntando al simbolo)
 } Symbol;
 
-typedef struct SymbolConfig { // sirve para rellenar los campos que se deseen al insertar un nuevo simbolo
+// sirve para rellenar los campos que se deseen al insertar un nuevo simbolo
+// de esta forma evito crear muchas funciones o una sola funcion con muchos parametros
+typedef struct SymbolConfig {
     Flag          flag;
     char          *nombre;
     SemanticType  tipo;
@@ -62,7 +64,6 @@ bool insertarSimbolo(TS *ts, SymbolConfig *config); // lo hace en el nivel del t
 Symbol * buscarSimbolo(TS *ts, char *nombre);       // si no encuentra el simbolo retorna NULL
 void printTS(TS *ts);
 void freeSymbol(Symbol *s);
-void freeTS(TS *ts);                                // esta funcion solo tiene sentido usarla si 'ts' se creo dinamicamente con malloc
-                                                    // libera la pila, pero no elimina los simbolos ya que son usados por el interprete
+void freeTS(TS *ts);                                // libera la pila, pero no elimina los simbolos ya que son usados por el interprete
 
 #endif // TS_H

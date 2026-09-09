@@ -16,7 +16,7 @@ typedef enum InstructionType {
     INSTRUCTION_ASSIGNMENT,     // asignacion para int's y bool's
     INSTRUCTION_RET,            // return
     INSTRUCTION_BEGIN_FUNCTION, // label para indicar donde comienza la funcion
-    INSTRUCTION_END_FUNCTION    // label para indicar donde temrmina la funcion
+    INSTRUCTION_END_FUNCTION    // label para indicar donde termina la funcion
 } InstructionType;
 
 typedef struct Instruction {
@@ -28,22 +28,27 @@ typedef struct Instruction {
     struct Instruction *prev;
 } Instruction;
 
-// inserta la instruccion 'i'a la cabeza y retorna la nueva cabeza (que es 'i')
-Instruction * insertarInstruction(Instruction **pHead, Instruction *i);
+// inserta la instruccion 'i' a la cabeza
+void insertarInstruction(Instruction **pHead, Instruction *i);
 
 // genera el pseudo assembly y construye una lista enlazada en memoria
+// las instrucciones se insertan siempre a la cabeza, por lo que la lista
+// esta al revez
 Instruction * generarPseudoAsmList(ASTNode *root);
 
+// printea una sola instruccion
 void printInstruction(Instruction *i);
 
 // printea toda la lista de instrucciones
 void printInstructions(Instruction *head);
 
+// escribe una sola instruccion en un archivo
 void writeInstruction(Instruction *i, FILE *f);
 
-// escribe toda la lista de isntrucciones en el archivo '3dir.ir'
+// escribe toda la lista de instrucciones en el archivo '3dir.ir'
 void writeInstructions(Instruction *head);
 
+// libera la memoria de toda la lista
 void freeInstructionList(Instruction *head);
 
 #endif // ASM_H
