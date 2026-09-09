@@ -1,4 +1,4 @@
-# TyDS2026
+# TDS2026
 repositorio de la materia Taller de Diseño de Software UNRC 2026
 
 ### Integrante: Loser Facundo Dario
