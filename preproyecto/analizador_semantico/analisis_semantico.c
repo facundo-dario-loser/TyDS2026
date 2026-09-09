@@ -74,7 +74,7 @@ void analisisNodeProg(ASTNode *node, TS *ts) {
 
     if ((config.tipo != SEMANTIC_TYPE_VOID) && !node->tieneReturn) {
         char *valRet = (config.tipo == SEMANTIC_TYPE_INT) ? "int" : "bool";
-        printf("[ERROR:AS]: main retorna '%s', pero en el cuerpo no se esta retornando nada (linea: %d)\n", valRet, node->line);
+        printf("[ERROR:ANALISIS:SEMANTICO]: main retorna '%s', pero en el cuerpo no se esta retornando nada (linea: %d)\n", valRet, node->line);
         exit(EXIT_FAILURE);
     }
     
@@ -103,14 +103,14 @@ void analisisNodeDecl(ASTNode *node, TS *ts) {
     if (node->right->nombre) config.nombre = strdup(node->right->nombre);
 
     if (config.tipo == SEMANTIC_TYPE_VOID) {
-        printf("[ERROR:AS]: no se pueden declarar variables void -> '%s' (linea: %d)\n", config.nombre, node->line);
+        printf("[ERROR:ANALISIS:SEMANTICO]: no se pueden declarar variables void -> '%s' (linea: %d)\n", config.nombre, node->line);
         exit(EXIT_FAILURE);
     }
 
     bool res = insertarSimbolo(ts, &config);
 
     if (!res) {
-        printf("[ERROR:AS]: variable redeclarada -> '%s' (linea: %d)\n", config.nombre, node->line);
+        printf("[ERROR:ANALISIS:SEMANTICO]: variable redeclarada -> '%s' (linea: %d)\n", config.nombre, node->line);
         exit(EXIT_FAILURE);
     }
 
@@ -122,20 +122,20 @@ void analisisNodeExpSuma(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->right, ts);
     
     if (!checkChildrenType(node, SEMANTIC_TYPE_INT)) { // la suma esta definida solo para ints
-        printf("[ERROR:AS]: '+' solo esta definida para operandos de tipo int (linea: %d)\n", node->line);
+        printf("[ERROR:ANALISIS:SEMANTICO]: '+' solo esta definida para operandos de tipo int (linea: %d)\n", node->line);
         
         if (node->left) {
             char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("\t\tleftOp: %s\n", leftOp);
+            printf("\t\t\t\tleftOp: %s\n", leftOp);
         } else {
-            printf("\t\tleftOp: empty\n");
+            printf("\t\t\t\tleftOp: empty\n");
         }
 
         if (node->right) {
             char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
-            printf("\t\trightOp: %s\n", rightOp);
+            printf("\t\t\t\trightOp: %s\n", rightOp);
         } else {
-            printf("\t\trightOp: empty\n");
+            printf("\t\t\t\trightOp: empty\n");
         }
 
         exit(EXIT_FAILURE);                            
@@ -148,21 +148,21 @@ void analisisNodeExpMult(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
-    if (!checkChildrenType(node, SEMANTIC_TYPE_INT)) { // la suma esta definida solo para ints
-        printf("[ERROR:AS]: '*' solo esta definida para operandos de tipo int (linea: %d)\n", node->line);
+    if (!checkChildrenType(node, SEMANTIC_TYPE_INT)) { // la multiplicacion esta definida solo para ints
+        printf("[ERROR:ANALISIS:SEMANTICO]: '*' solo esta definida para operandos de tipo int (linea: %d)\n", node->line);
         
         if (node->left) {
             char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("\t\tleftOp: %s\n", leftOp);
+            printf("\t\t\t\tleftOp: %s\n", leftOp);
         } else {
-            printf("\t\tleftOp: empty\n");
+            printf("\t\t\t\tleftOp: empty\n");
         }
 
         if (node->right) {
             char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
-            printf("\t\trightOp: %s\n", rightOp);
+            printf("\t\t\t\trightOp: %s\n", rightOp);
         } else {
-            printf("\t\trightOp: empty\n");
+            printf("\t\t\t\trightOp: empty\n");
         }
 
         exit(EXIT_FAILURE);                            
@@ -175,21 +175,21 @@ void analisisNodeExpAnd(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
-    if (!checkChildrenType(node, SEMANTIC_TYPE_BOOL)) { // la suma esta definida solo para ints
-        printf("[ERROR:AS]: '&&' solo esta definida para operandos de tipo bool (linea: %d)\n", node->line);
+    if (!checkChildrenType(node, SEMANTIC_TYPE_BOOL)) { // el and esta definida solo para bools
+        printf("[ERROR:ANALISIS:SEMANTICO]: '&&' solo esta definida para operandos de tipo bool (linea: %d)\n", node->line);
         
         if (node->left) {
             char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("\t\tleftOp: %s\n", leftOp);
+            printf("\t\t\t\tleftOp: %s\n", leftOp);
         } else {
-            printf("\t\tleftOp: empty\n");
+            printf("\t\t\t\tleftOp: empty\n");
         }
 
         if (node->right) {
             char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
-            printf("\t\trightOp: %s\n", rightOp);
+            printf("\t\t\t\trightOp: %s\n", rightOp);
         } else {
-            printf("\t\trightOp: empty\n");
+            printf("\t\t\t\trightOp: empty\n");
         }
 
         exit(EXIT_FAILURE);                            
@@ -202,21 +202,21 @@ void analisisNodeExpOr(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->left, ts);
     analisisSemanticoAux(node->right, ts);
     
-    if (!checkChildrenType(node, SEMANTIC_TYPE_BOOL)) { // la suma esta definida solo para ints
-        printf("[ERROR:AS]: '||' solo esta definida para operandos de tipo bool (linea: %d)\n", node->line);
+    if (!checkChildrenType(node, SEMANTIC_TYPE_BOOL)) { // el or esta definida solo para bools
+        printf("[ERROR:ANALISIS:SEMANTICO]: '||' solo esta definida para operandos de tipo bool (linea: %d)\n", node->line);
         
         if (node->left) {
             char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("\t\tleftOp: %s\n", leftOp);
+            printf("\t\t\t\tleftOp: %s\n", leftOp);
         } else {
-            printf("\t\tleftOp: empty\n");
+            printf("\t\t\t\tleftOp: empty\n");
         }
 
         if (node->right) {
             char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
-            printf("\t\trightOp: %s\n", rightOp);
+            printf("\t\t\t\trightOp: %s\n", rightOp);
         } else {
-            printf("\t\trightOp: empty\n");
+            printf("\t\t\t\trightOp: empty\n");
         }
         
         exit(EXIT_FAILURE);                            
@@ -229,7 +229,7 @@ void analisisNodeId(ASTNode *node, TS *ts) {
     Symbol *s = buscarSimbolo(ts, node->nombre);
     
     if (!s) {
-        printf("[ERROR:AS]: variable no declarada -> '%s' (linea: %d)\n", node->nombre, node->line);
+        printf("[ERROR:ANALISIS:SEMANTICO]: variable no declarada -> '%s' (linea: %d)\n", node->nombre, node->line);
         exit(EXIT_FAILURE);
     } else {
         node->semanticType = s->tipo;
@@ -245,20 +245,20 @@ void analisisNodeAssign(ASTNode *node, TS *ts) {
     analisisSemanticoAux(node->right, ts);
     
     if (!checkChildrenType(node, node->left->semanticType)) { // la parte derecha de la asignacion deberia tener el mismo tipo que la parte izquierda
-        printf("[ERROR:AS]: '=' tipo de leftOp es diferente del tipo de rightOp (linea: %d)\n", node->line);
+        printf("[ERROR:ANALISIS:SEMANTICO]: 'asignacion invalida' el tipo de leftOp es diferente del tipo de rightOp (linea: %d)\n", node->line);
 
         if (node->left) {
             char *leftOp = (node->left->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("\t\tleftOp: %s\n", leftOp);
+            printf("\t\t\t\tleftOp: %s\n", leftOp);
         } else {
-            printf("\t\tleftOp: empty\n");
+            printf("\t\t\t\tleftOp: empty\n");
         }
 
         if (node->right) {
             char *rightOp = (node->right->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool"; 
-            printf("\t\trightOp: %s\n", rightOp);
+            printf("\t\t\t\trightOp: %s\n", rightOp);
         } else {
-            printf("\t\trightOp: empty\n");
+            printf("\t\t\t\trightOp: empty\n");
         }
 
         exit(EXIT_FAILURE);
@@ -274,13 +274,13 @@ void analisisNodeReturn(ASTNode *node, TS *ts) {
     if (exp == NULL) { // si hace 'return;'
         if (s->tipo != SEMANTIC_TYPE_VOID) {
             char *retType = (s->tipo == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("[ERROR:AS]: main retorna '%s', pero en la funcion se hace return sin nada (linea: %d)\n", retType, node->line);
+            printf("[ERROR:ANALISIS:SEMANTICO]: main retorna '%s', pero en la funcion se hace return sin nada (linea: %d)\n", retType, node->line);
             exit(EXIT_FAILURE);
         }
     } else { // si retorna algo 'return exp;'
         if (s->tipo == SEMANTIC_TYPE_VOID) {
             char *retType = (exp->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("[ERROR:AS]: main no retorna nada (void), pero se esta retornando un '%s' (linea: %d)\n", retType, node->line);
+            printf("[ERROR:ANALISIS:SEMANTICO]: main no retorna nada (void), pero se esta retornando un '%s' (linea: %d)\n", retType, node->line);
             exit(EXIT_FAILURE);
         }
 
@@ -288,13 +288,13 @@ void analisisNodeReturn(ASTNode *node, TS *ts) {
 
         if ((s->tipo == SEMANTIC_TYPE_INT) && !(exp->semanticType == SEMANTIC_TYPE_INT)) {
             char *expType = (exp->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("[ERROR:AS]: main retorna un int, pero se esta retornando un '%s' (linea: %d)\n", expType, node->line);
+            printf("[ERROR:ANALISIS:SEMANTICO]: main retorna un int, pero se esta retornando un '%s' (linea: %d)\n", expType, node->line);
             exit(EXIT_FAILURE);
         }
 
         if ((s->tipo == SEMANTIC_TYPE_BOOL) && !(exp->semanticType == SEMANTIC_TYPE_BOOL)) {
             char *expType = (exp->semanticType == SEMANTIC_TYPE_INT) ? "int" : "bool";
-            printf("[ERROR:AS]: main retorna un bool, pero se esta retornando un '%s' (linea: %d)\n", expType, node->line);
+            printf("[ERROR:ANALISIS:SEMANTICO]: main retorna un bool, pero se esta retornando un '%s' (linea: %d)\n", expType, node->line);
             exit(EXIT_FAILURE);
         }
     }

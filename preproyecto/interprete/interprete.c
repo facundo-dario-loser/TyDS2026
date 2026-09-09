@@ -1,5 +1,7 @@
 #include "interprete.h"
 
+// esta implementado de manera recursiva
+
 void interpretarNodeExpSuma(ASTNode *node);
 void interpretarNodeExpMult(ASTNode *node);
 void interpretarNodeExpAnd(ASTNode *node);

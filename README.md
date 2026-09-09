@@ -5,7 +5,7 @@ repositorio de la materia Taller de Diseño de Software UNRC 2026
 
 ## Instrucciones para compilar
 
-si se cuenta con la herramienta `Make` instalada ejecutar en la terminal:
+si se cuenta con la herramienta `Make` instalada, ejecutar en la terminal:
 
 ```
 cd preproyecto
@@ -34,11 +34,11 @@ gcc analizador_sintactico/parser.tab.c 		  \
     -o build/preproyecto
 ```
 
-luego de esto se creara el ejecutable llamado `preproyecto` dentro de la carpeta `/preproyecto/build`
+luego de esto se creara el ejecutable llamado `preproyecto` dentro de la carpeta `/preproyecto/build/`
 
 ## Uso: 
 
-para usar el programa se debe proveer primero un flag para indicar si se desea ejecutar el interprete o se quiere generar pseudo assembly y luego se debe indicar el path al archivo con el programa fuente
+para usar el programa se debe proveer primero un flag para indicar si se desea ejecutar el interprete o se quiere generar pseudo assembly y luego se debe pasar el path al archivo con el programa fuente
 
 **Flags:**
 - `-i` (intérprete)
@@ -46,6 +46,11 @@ para usar el programa se debe proveer primero un flag para indicar si se desea e
 
 ```
 ./build/preproyecto -flag path_to_source_code
+```
+**Ejemplo:**	
+```
+cd preproyecto
+./build/preproyecto -p tests/test7.txt	
 ```
 **Aclaración:**
 
@@ -57,27 +62,28 @@ En el caso del generador de pseudo assembly al finalizar imprime en la terminal 
 
 dentro de `/preproyecto` se cuenta con las siguientes carpetas y archivos:
 
-`/analizador_lexico`: contiene el lexer hecho con flex
+`/analizador_lexico`: contiene el lexer hecho con flex.
 
-`/analizador_sintactico`: contiene el parser hecho con bison
+`/analizador_sintactico`: contiene el parser hecho con bison.
 
-`/analizador_semantico`: codigo correspondiente al analisis semantico
+`/analizador_semantico`: codigo correspondiente al analisis semantico.
 
-`/interprete`: codigo correspondiente al interprete
+`/interprete`: codigo correspondiente al interprete (fue implementado usando recursión sobre el ast).
 
-`/pseudo_asm`: codigo correspondiente a la generacion de pseudo assembly
+`/pseudo_asm`: codigo correspondiente a la generacion de pseudo assembly (usando código de 3 direcciones).
 
-`/TADs`: contiene la implementacion del arbol sintactico abstracto (`ast.h/.c`) y de la tabla de simbolos (`ts.h/.c`)
+`/TADs`: contiene la implementación del árbol sintactico abstracto (`ast.h/.c`) y de la tabla de simbolos (`ts.h/.c`).
+El ast esta implementado como un árbol binario y la tabla de simbolos como una pila de niveles (implementada con una lista enlazada) dónde cada nivel a su vez tiene una lista enlazada de simbolos.
 
-`/build`: aca se guarda el ejecutable final llamado `preproyecto`
+`/build`: aca se guarda el ejecutable final llamado `preproyecto`.
 
-`/tests`: algunos tests con los que se probo el proyecto
+`/tests`: algunos tests con los que se probo el proyecto.
 
-`main.c`: punto de entrada de todo el programa
+`main.c`: punto de entrada de todo el programa.
 
 
 ## Gramatica del lenguaje
-**Aclaracion**: esto no es codigo de bison. Esta escrita asi para que sea mas legible
+**Aclaración**: esto no es código de bison. Esta escrita asi para que sea mas legible
 ```
 type -> INT | BOOL | VOID
 

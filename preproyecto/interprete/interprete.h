@@ -4,7 +4,7 @@
 #include "../TADs/ast.h"
 #include "../TADs/ts.h"
 
-//#define DEBUG_INTERPRETER
+// interprete recursivo
 
 #if DEBUG_INTERPRETE
     #define debug_interprete(...) printf("[INTERPRETE]: %s\n", __VA_ARGS__);

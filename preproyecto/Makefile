@@ -13,4 +13,4 @@ main : analizador_lexico/lexico.l analizador_sintactico/parser.y $(PROGRAMAS_C)
 	gcc $(PROGRAMAS_C) -o build/preproyecto
 
 test : build/preproyecto
-	./build/preproyecto -p tests/test9_error.txt	
+	./build/preproyecto -p tests/test7.txt	

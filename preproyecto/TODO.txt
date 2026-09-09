@@ -10,6 +10,7 @@
 
 - [IMPLEMENTAR]: hacer que en todos los nodos del arbol el campo nombre apunte a un string que surja de hacer malloc para poder liberarlo de forma segura luego
 - [IMPLEMENTAR]: para gestionar los msjs de error podria crear un enum con los tipos y hacer una funcion que se encargue de imprimir los msjs
+- [IMPLEMENTAR]: hacer el interprete para que sea iterativo y no recursivo como ahora (usando el codigo de 3 direcciones)
 
 - [NOTA]: creo que no tiene sentido freeTS() porque al terminar el analsis semantico cada vez que se cierra un nivel se libera memoria
 - [NOTA]: en analisis semantico el caso NODE_PROG cuando expandamos el compilador en realidad pasara a ser el caso N_FUNCION eventualmente
