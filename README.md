@@ -54,11 +54,11 @@ cd preproyecto
 ```
 **Aclaración:**
 
-El interprete la unica salida que genera es un print del valor resultante de evaluar la expresion asociada a un return (`return exp;`). Si no se retorna nada, el interprete no genera ninguna salida.
+El interprete la unica salida que genera es un print del valor resultante de evaluar la expresión asociada a un return (`return exp;`). Si no se retorna nada, el interprete no genera ninguna salida.
 
 En el caso del generador de pseudo assembly al finalizar imprime en la terminal todas las instrucciones generadas.
 
-## Organizacion
+## Organización
 
 dentro de `/preproyecto` se cuenta con las siguientes carpetas y archivos:
 
@@ -70,7 +70,7 @@ dentro de `/preproyecto` se cuenta con las siguientes carpetas y archivos:
 
 `/interprete`: codigo correspondiente al interprete (fue implementado usando recursión sobre el ast).
 
-`/pseudo_asm`: codigo correspondiente a la generacion de pseudo assembly (usando código de 3 direcciones).
+`/pseudo_asm`: codigo correspondiente a la generación de pseudo assembly (usando código de 3 direcciones).
 
 `/TADs`: contiene la implementación del árbol sintactico abstracto (`ast.h/.c`) y de la tabla de simbolos (`ts.h/.c`).
 El ast esta implementado como un árbol binario y la tabla de simbolos como una pila de niveles (implementada con una lista enlazada) dónde cada nivel a su vez tiene una lista enlazada de simbolos.
@@ -82,7 +82,7 @@ El ast esta implementado como un árbol binario y la tabla de simbolos como una 
 `main.c`: punto de entrada de todo el programa.
 
 
-## Gramatica del lenguaje
+## Gramática del lenguaje
 **Aclaración**: esto no es código de bison. Esta escrita asi para que sea mas legible
 ```
 type -> INT | BOOL | VOID
@@ -91,7 +91,7 @@ p    -> type MAIN ( ) { c }
 
 c    -> d c | s c | λ		  // cuerpo de la funcion main
 
-e    -> e + e                 // expresion
+e    -> e + e                 // expresión
 e    -> e * e
 e    -> e AND e 
 e    -> e OR e
@@ -104,5 +104,5 @@ s    -> ID = e ; 			  // sentencia
 s    -> RETURN e ;       
 s    -> RETURN ;          
 
-d    -> type ID ;             // declaracion
+d    -> type ID ;             // declaración
 ```
